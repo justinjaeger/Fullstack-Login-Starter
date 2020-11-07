@@ -1,0 +1,23 @@
+// import fonts
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500&display=swap');
+
+// declare colors
+$div-background: #7878805b; /*placeholder color*/
+$app-background: #2c2c2eff;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#App {
+  color: #ffffff;
+  background: $app-background;
+  border: 1px solid #e7e7e7;
+  box-shadow: 5px 5px 40px 5px #cecece;
+  border-radius: 5px;
+  margin: auto;
+  padding: 1%;
+  width: 90%;
+}
