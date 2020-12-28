@@ -1,0 +1,76 @@
+NOTES:
+- DATE is stored like yyyy-mm-dd
+- MySQL works faster qith integers -- therefore, best practice is that the data type of the primary key column should be INT (and make sure INT can hold all of the rows you'll eventually have as it is limited)
+
+privileges
+- can make permissions for different users
+- CREATE USER justinjaeger
+- IDENTIFIED BY passw0rd (interesting that you declare it like that )
+// ================== //
+
+CREATE TABLE users (
+  user_id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(20) NOT NULL UNIQUE,
+  password VARCHAR(20),
+  admin BIT(1) DEFAULT 0,
+  image VARCHAR(10000),
+  dateCreated DATE,
+  lastLoggedIn DATE
+)
+
+CREATE TABLE friendships (
+  friendship_id INT AUTO_INCREMENT PRIMARY KEY,
+  follower INT FOREIGN KEY REFERENCES users(user_id) NOT NULL,
+  followedUser INT FOREIGN KEY REFERENCES users(user_id) NOT NULL
+)
+
+// ===== METACRITIC EXCLUSIVE ===== //
+
+CREATE TABLE mcCategories (
+  mcCategory_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  type ENUM('weekly', 'festival', 'other') DEFAULT NULL,
+  open BIT(1) DEFAULT 1,
+  movies VARCHAR(1000),
+  dateCloses DATETIME,
+  collectiveScore DECIMAL(3,2) DEFAULT NULL,
+  collectiveRank INT DEFAULT NULL,
+  totalUsersPredicting INT DEFAULT NULL
+)
+
+CREATE TABLE mcMovies (
+  mcMovie_id INT AUTO_INCREMENT PRIMARY KEY,
+  category INT FOREIGN KEY REFERENCES mcCategories(mcCategory_id) NOT NULL,
+  title VARCHAR(200),
+  director VARCHAR(100),
+  starring VARCHAR(1000),
+  plot VARCHAR(10000),
+  studio VARCHAR(50),
+  image VARCHAR(10000),
+  imdbUrl VARCHAR(1000),
+  embargoLift DATE DEFAULT NULL,
+  metascore TINYINT,
+  collectivePrediction DECIMAL(3,2)
+)
+
+CREATE TABLE mcMovieLogs (
+  mcMovieLog_id INT AUTO_INCREMENT PRIMARY KEY,
+  movie INT FOREIGN KEY REFERENCES movies(movie_id) NOT NULL,
+  date DATE,
+  collectivePrediction DECIMAL(3,2)
+)
+
+CREATE TABLE userMcCategories (
+  userMcCategory_id INT AUTO_INCREMENT PRIMARY KEY,
+  user INT FOREIGN KEY REFERENCES users(user_id) NOT NULL,
+  category INT FOREIGN KEY REFERENCES categories(category_id) NOT NULL,
+  predictingAll BIT(1) DEFAULT 0,
+  score DECIMAL(3,2) DEFAULT NULL,
+  rank INT DEFAULT NULL,
+)
+
+CREATE TABLE userMcMovies (
+  userMcMoviePrediction_id INT AUTO_INCREMENT PRIMARY KEY,
+  user INT FOREIGN KEY REFERENCES users(user_id) NOT NULL,
+  userPrediction DECIMAL(3,2)
+)
