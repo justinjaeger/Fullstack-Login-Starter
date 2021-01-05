@@ -1,8 +1,9 @@
 const express = require('express');
-const path = require('path');
-
 const app = express();
+const path = require('path');
 const PORT = 3000;
+
+const routes = require('./routes/mainRouter');
 
 // JSON parser:
 app.use(express.json());
@@ -14,6 +15,9 @@ if (process.env.NODE_ENV === 'production') {
     res.status(200).sendFile(path.resolve(__dirname, '../client/src/index.html'));
   });
 }
+
+// all routes go through here
+app.use('/', routes);
 
 // catch-all endpoint handler
 app.use((req, res) => res.status(400).send('Page not found.'));
