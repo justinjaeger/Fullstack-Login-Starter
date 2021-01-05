@@ -4,7 +4,7 @@
 
 const queries = {};
 
-queries.getFollowships = `
+queries.getAllFollowships = `
   SELECT * FROM followships
 `;
 
@@ -30,6 +30,13 @@ queries.getFollowers = `
 `;
 
 // get people who I follow
-queries.getFollowees = ``;
+queries.getFollowees = `
+  SELECT username
+  FROM users
+  INNER JOIN followships
+  ON users.user_id = followships.followee_id
+  WHERE follower_id=?
+  ORDER BY DATE(dateCreated) DESC
+`;
 
 module.exports = queries;

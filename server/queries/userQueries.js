@@ -44,7 +44,7 @@ queries.changePassword = `
 
 queries.addUserImage = `
   UPDATE users(image)
-  VALUES(?)
+  SET image=?
   WHERE user_id=?
 `;
 
