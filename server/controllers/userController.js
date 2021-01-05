@@ -1,6 +1,9 @@
 const db = require('../connections/connect');
 const users = require('../queries/userQueries');
 
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 const userController = {};
 
 // =================================== //
@@ -23,7 +26,7 @@ userController.getUsers = (req, res, next) => {
 /**
  * Edge cases:
  * - email or username is already in use
- * - password is shorter than 8 characters
+ * - password is shorter than 8 characters but not longer than 20
  * - if the passwords are not identical
  * - do this by sending a message back
  *  - res.render('/url', { message: 'text ' })
@@ -31,15 +34,42 @@ userController.getUsers = (req, res, next) => {
  * - hash the password
  */
 
+userController.checkAndHashPassword = async (req, res, next) => {
+  
+  const { password, confirmPassword } = req.body;
+
+  // check if password is valid
+  if (password !== confirmPassword) {
+    return res.status(202).send({ message : 'passwords do not match'});
+  };
+  if (password.length < 8) {
+    return res.status(202).send({ message : 'password must be more than 8 characters'});
+  };
+  if (password.length > 20) {
+    return res.status(202).send({ message : 'password must be less than 20 characters'});
+  };
+
+  // hash password
+  let hashedPassword = await bcrypt.hash(password, 8);
+  // send to res.locals
+  res.locals.password = hashedPassword;
+
+  return next();
+};
+
+// =================================== //
+
 userController.createUser = (req, res, next) => {
 
-  const { email, username, password, confirmPassword } = req.body;
+  const { email, username } = req.body;
+  const password = res.locals.password;
 
   db.query(users.createUser, [email, username, password], (err, result) => {
     if (result) {
       console.log('result:', result);
     };
     if (err) {
+      // will catch duplicates in unique
       console.log('err:', err);
       return next(err);
     };

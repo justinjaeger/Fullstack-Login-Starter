@@ -2,7 +2,7 @@ CREATE TABLE users (
   user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(100) NOT NULL UNIQUE,
   username VARCHAR(20) NOT NULL UNIQUE,
-  password VARCHAR(20),
+  password VARCHAR(100),
   admin BIT(1) DEFAULT 0,
   authenticated BIT(1) DEFAULT 0,
   image VARCHAR(10000),
