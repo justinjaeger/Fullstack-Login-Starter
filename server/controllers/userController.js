@@ -12,6 +12,7 @@ userController.getUsers = (req, res, next) => {
   db.query(users.getUsers, (err, result) => {
     if (result) {
       console.log('result:', result);
+      res.locals.users = result;
     };
     if (err) {
       console.log('err:', err);
