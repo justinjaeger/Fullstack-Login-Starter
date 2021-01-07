@@ -15,7 +15,7 @@ router.get('/',
   userController.getUsers,
   (req, res) => {
     console.log('inside userRouter');
-    return res.sendStatus(200).json(res.locals.users);
+    return res.send(res.locals.users);
 });
 
 // Create New User
@@ -24,7 +24,7 @@ router.post('/',
   userController.createUser,
   // send an email
   (req, res) => {
-    return res.sendStatus(200).json();
+    return res.send();
 });
 
 // Validate User

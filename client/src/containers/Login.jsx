@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link, Switch, Route } from 'react-router-dom';
 
-import SignUp from './SignUp';
-
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,6 +11,7 @@ function Login() {
   }
 
   function handleSubmit(event) {
+    console.log('submitted');
     event.preventDefault();
   }
 
