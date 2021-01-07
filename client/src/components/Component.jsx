@@ -5,7 +5,7 @@ const Component = () => {
   const [variable, func] = useState('');
 
   return (
-    <div>this is Component</div>
+    <div></div>
   );
 };
 
