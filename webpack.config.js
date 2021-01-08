@@ -7,16 +7,17 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/dist/',
+    // publicPath: '/dist/',
   },
   devServer: {
     port: 8080,
     publicPath: '/dist/',
     contentBase: './client/src',
     proxy: {
-      '/graphql': 'http://localhost:3000',
+      '/login': 'http://localhost:3000',
     },
     hot: true,
+    historyApiFallback: true,
   },
   entry: path.resolve(__dirname, './client/src/index.jsx'),
   module: {

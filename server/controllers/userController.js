@@ -70,9 +70,19 @@ userController.createUser = (req, res, next) => {
       console.log('result:', result);
     };
     if (err) {
-      // will catch duplicates in unique
       console.log('err:', err);
-      return next(err);
+
+      let message = 'An error occured';
+      if (err.code === 'ER_DUP_ENTRY') {
+        if (err.sqlMessage.split('.')[1] === `username'`) {
+          message = 'This username is already registered.';
+        };
+        if (err.sqlMessage.split('.')[2] === `email'`) {
+          message = 'This email is already registered.';
+        }
+      };
+      // we're using 202 for sending error messages that are displayed to the user
+      return res.status(202).send({ message });
     };
     return next();
   });

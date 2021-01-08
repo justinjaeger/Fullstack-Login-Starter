@@ -24,7 +24,7 @@ router.post('/',
   userController.createUser,
   // send an email
   (req, res) => {
-    return res.send();
+    return res.status(200).send();
 });
 
 // Validate User

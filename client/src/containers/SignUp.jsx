@@ -8,6 +8,7 @@ function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   function validateForm() {
     return email.length > 0 && password.length > 0;
@@ -19,15 +20,23 @@ function SignUp() {
       username,
       password,
       confirmPassword
-    }
+    };
     console.log('submitted', payload);
 
-    axios.get('/login')
+    axios.post('/login', payload)
       .then(res => {
+        // sends 202 with message when error occurs
+        if (res.status === 202) {
+          setErrorMessage(res.data.message);
+        }
+        else {
+          setErrorMessage(""); // reset error message
+          // load a new page
+        }
         console.log('res', res)
       })
       .catch(err => {
-        console.log('err', err)
+        console.log('err', err.response)
       })
 
     event.preventDefault(); /** prevents it from refreshing */
@@ -82,6 +91,8 @@ function SignUp() {
         
       </Form>
     </div>
+
+    <div>{errorMessage}</div>
 
     <Link to="/login">Login</Link>
     </>
