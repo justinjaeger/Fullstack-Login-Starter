@@ -7,30 +7,13 @@ const userController = {};
 
 // =================================== //
 
-userController.getUsers = (req, res, next) => {
-  db.query(users.getUsers, (err, result) => {
-    if (result) {
-      console.log('result:', result);
-      res.locals.users = result;
-    };
-    if (err) {
-      console.log('err:', err);
-      return next(err);
-    };
-    return next();
-  });
-};
-
-// =================================== //
-
-userController.getuserById = (req, res, next) => {
+userController.login = (req, res, next) => {
 
   const { user_id } = req.body;
 
-  db.query(users.getUserById, [user_id], (err, result) => {
+  db.query(users.login, [user_id], (err, result) => {
     if (result) {
       console.log('result:', result);
-      res.locals.result = result;
     };
     if (err) {
       console.log('err:', err);
@@ -42,11 +25,11 @@ userController.getuserById = (req, res, next) => {
 
 // =================================== //
 
-userController.makeAdmin = (req, res, next) => {
+userController.authenticateUser = (req, res, next) => {
 
   const { user_id } = req.body;
 
-  db.query(users.makeAdmin, [user_id], (err, result) => {
+  db.query(users.createUser, [user_id], (err, result) => {
     if (result) {
       console.log('result:', result);
     };
@@ -60,11 +43,15 @@ userController.makeAdmin = (req, res, next) => {
 
 // =================================== //
 
-userController.addUserImage = (req, res, next) => {
+userController.checkPassword = (req, res, next) => {};
 
-  const { image, user_id } = req.body;
+// =================================== //
 
-  db.query(users.addUserImage, [image, user_id], (err, result) => {
+userController.changePassword = (req, res, next) => {
+
+  const { password, user_id } = req.body;
+
+  db.query(users.changePassword, [password, user_id], (err, result) => {
     if (result) {
       console.log('result:', result);
     };

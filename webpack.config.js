@@ -15,6 +15,8 @@ module.exports = {
     contentBase: './client/src',
     proxy: {
       '/login': 'http://localhost:3000',
+      '/signup': 'http://localhost:3000',
+      '/user': 'http://localhost:3000',
     },
     hot: true,
     historyApiFallback: true,

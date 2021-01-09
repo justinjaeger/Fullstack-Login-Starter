@@ -23,7 +23,7 @@ function SignUp() {
     };
     console.log('submitted', payload);
 
-    axios.post('/login', payload)
+    axios.post('/signup', payload)
       .then(res => {
         // sends 202 with message when error occurs
         if (res.status === 202) {
