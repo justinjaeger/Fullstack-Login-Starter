@@ -9,6 +9,8 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [myUsername, setMyUsername] = useState("");
 
   function validateForm() {
     return email.length > 0 && password.length > 0;
@@ -31,12 +33,16 @@ function SignUp() {
         }
         else {
           setErrorMessage(""); // reset error message
-          // load a new page
+          // log user in
+          setLoggedIn(true);
         }
-        console.log('res', res)
+        // res.data has all the user info
+        const { username } = res.data;
+        setMyUsername(username);
+        console.log('res', res);
       })
       .catch(err => {
-        console.log('err', err.response)
+        console.log('err', err.response);
       })
 
     event.preventDefault(); /** prevents it from refreshing */
@@ -44,6 +50,9 @@ function SignUp() {
 
   return (
     <>
+    {loggedIn && 
+      <div>Welcome, {myUsername}</div>
+    }
     <div className="signup">
       <Form onSubmit={handleSubmit}>
 
