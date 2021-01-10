@@ -3,14 +3,12 @@ import { Link, Switch, Route } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
-function SignUp() {
+function SignUp(props) {
+  const { setError, logUserIn } = props;
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [myUsername, setMyUsername] = useState("");
 
   function validateForm() {
     return email.length > 0 && password.length > 0;
@@ -29,30 +27,21 @@ function SignUp() {
       .then(res => {
         // sends 202 with message when error occurs
         if (res.status === 202) {
-          setErrorMessage(res.data.message);
-        }
-        else {
-          setErrorMessage(""); // reset error message
-          // log user in
-          setLoggedIn(true);
-        }
-        // res.data has all the user info
-        const { username } = res.data;
-        setMyUsername(username);
-        console.log('res', res);
+          setError(res.data.message);
+        } else {
+          setError(""); // reset error message
+          logUserIn(res.data); // log user in & send user data
+        };
       })
       .catch(err => {
         console.log('err', err.response);
       })
 
     event.preventDefault(); /** prevents it from refreshing */
-  }
+  };
 
   return (
     <>
-    {loggedIn && 
-      <div>Welcome, {myUsername}</div>
-    }
     <div className="signup">
       <Form onSubmit={handleSubmit}>
 
@@ -100,8 +89,6 @@ function SignUp() {
         
       </Form>
     </div>
-
-    <div>{errorMessage}</div>
 
     <Link to="/login">Login</Link>
     </>

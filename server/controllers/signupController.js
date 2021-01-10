@@ -3,8 +3,6 @@ const users = require('../queries/userQueries');
 const profanityFilter = require('../misc/profanityFilter');
 const usernameFilter = require('../misc/usernameFilter');
 
-const bcrypt = require('bcrypt');
-
 const signupController = {};
 
 // =================================== //
@@ -59,23 +57,6 @@ signupController.validatePassword = async (req, res, next) => {
 // =================================== //
 
 /**
- * - Encrypts the password with bcrypt
- * - stores it via res.locals for next middleware
- */
-
-signupController.hashPassword = async (req, res, next) => {
-  
-  const { password } = req.body;
-
-  let hashedPassword = await bcrypt.hash(password, 8);
-  res.locals.password = hashedPassword;
-
-  return next();
-};
-
-// =================================== //
-
-/**
  * - Takes the input from the frontend and creates a new user in db
  * - Handles errors that MySQL sends back
  *  - if there is an error (e.g. user already exists), we send a 202 with a message to the front
@@ -111,6 +92,11 @@ signupController.createUser = (req, res, next) => {
 
 // =================================== //
 
+/**
+ * - calls the corresponding query
+ * - stores user_id in res.locals
+ */
+
 signupController.getUserIdByUsername = (req, res, next) => {
 
   const { username } = req.body;
@@ -119,7 +105,6 @@ signupController.getUserIdByUsername = (req, res, next) => {
     if (result) {
       const { user_id } = result[0];
       res.locals.user_id = user_id;
-      console.log('getUserIdByUsername', res.locals.user_id);
       return next();
     };
     if (err) {

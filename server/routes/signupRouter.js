@@ -10,7 +10,7 @@ const userController = require('../controllers/userController');
 router.post('/',
   signupController.validateUsername,
   signupController.validatePassword,
-  signupController.hashPassword,
+  loginController.hashPassword,
   signupController.createUser,
   signupController.getUserIdByUsername,
   cookieController.createCookie,
@@ -23,9 +23,9 @@ router.post('/',
 
 // Authenticate a user (via email)
 router.post('/auth',
-  loginController.checkPassword, // asks user to enter password again
-  loginController.authenticateUser, // changes status of authenticated from 0 to 1
-  loginController.login, // actually logs the user in and sends the cookie
+  // loginController.checkPassword, // asks user to enter password again
+  // loginController.authenticateUser, // changes status of authenticated from 0 to 1
+  // loginController.login, // actually logs the user in and sends the cookie
   (req, res) => {
     return res.status(200).send();
 });

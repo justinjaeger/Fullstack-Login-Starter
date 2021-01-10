@@ -25,8 +25,18 @@ queries.getUserIdByUsername = `
   WHERE username=?
 `;
 
+queries.getUserIdByEmail = `
+  SELECT * FROM users
+  WHERE email=?
+`;
+
 queries.getUserById = `
   SELECT * FROM users
+  WHERE user_id=?
+`;
+
+queries.getPasswordById = `
+  SELECT password FROM users
   WHERE user_id=?
 `;
 
