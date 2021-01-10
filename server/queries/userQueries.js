@@ -19,6 +19,12 @@ queries.authenticateUser = `
   WHERE user_id=?
 `;
 
+queries.getUserIdByUsername = `
+  SELECT user_id
+  FROM users
+  WHERE username=?
+`;
+
 queries.getUserById = `
   SELECT * FROM users
   WHERE user_id=?

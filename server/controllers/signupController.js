@@ -88,10 +88,11 @@ signupController.createUser = (req, res, next) => {
 
   db.query(users.createUser, [email, username, password], (err, result) => {
     if (result) {
-      console.log('result:', result);
+      // make sure we get the id now to pass in res.locals
+      return next();
     };
     if (err) {
-      console.log('err:', err);
+      console.log('error in createUser', err);
 
       let message = 'An error occured';
       if (err.code === 'ER_DUP_ENTRY') {
@@ -105,13 +106,35 @@ signupController.createUser = (req, res, next) => {
       // we're using 202 for sending error messages that are displayed to the user
       return res.status(202).send({ message });
     };
-    return next();
   });
 };
 
 // =================================== //
 
-signupController.sendVerificationEmail = (req, res, next) => {};
+signupController.getUserIdByUsername = (req, res, next) => {
+
+  const { username } = req.body;
+
+  db.query(users.getUserIdByUsername, [username], (err, result) => {
+    if (result) {
+      const { user_id } = result[0];
+      res.locals.user_id = user_id;
+      console.log('getUserIdByUsername', res.locals.user_id);
+      return next();
+    };
+    if (err) {
+      console.log('error in getUserIdByUsername', err);
+      return next(err);
+    };
+  });
+
+};
+
+// =================================== //
+
+signupController.sendVerificationEmail = (req, res, next) => {
+
+};
 
 // =================================== //
 

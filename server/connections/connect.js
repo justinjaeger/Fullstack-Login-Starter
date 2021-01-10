@@ -17,7 +17,7 @@ const con = mysql.createConnection({
   host: host,
   user: user,
   password: password,
-  database: database
+  database: database,
 });
 
 // Connect
@@ -26,15 +26,5 @@ con.connect(err => {
   else console.log("Connected to MySQL")
 });
 
-// module.exports = {
-//   query: (text, params, callback) => {
-//     console.log('executed query', text);
-//     return con.query(text, params, callback);
-//   }
-// }
-// module.exports = con.query(sql, function (err, result) {
-//   if (err) throw err;
-//   console.log("Result: " + result);
-// });
-
+// Export the connection
 module.exports = con;
