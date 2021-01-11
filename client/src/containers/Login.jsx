@@ -3,9 +3,12 @@ import { Form, Button } from "react-bootstrap";
 import { Link, Switch, Route } from 'react-router-dom';
 
 function Login(props) {
-  const { setError, logUserIn } = props;
+  console.log('shit');
+  // const { setError, logUserIn } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  console.log('props', props)
 
   function validateForm() {
     return emailOrUsername.length > 0 && password.length > 0;
@@ -37,7 +40,6 @@ function Login(props) {
 
   return (
     <>
-    <div className="Login">
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="emailOrUsername">
           <Form.Label>Email or Username</Form.Label>
@@ -61,9 +63,6 @@ function Login(props) {
           Login
         </Button>
       </Form>
-    </div>
-
-    <Link to="/signup">SignUp</Link>
     </>
   );
 }

@@ -42,7 +42,6 @@ function SignUp(props) {
 
   return (
     <>
-    <div className="signup">
       <Form onSubmit={handleSubmit}>
 
         <Form.Group size="lg" controlId="email">
@@ -88,9 +87,6 @@ function SignUp(props) {
         </Button>
         
       </Form>
-    </div>
-
-    <Link to="/login">Login</Link>
     </>
   );
 }
