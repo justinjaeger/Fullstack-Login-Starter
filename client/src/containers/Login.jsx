@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import { Link, Switch, Route } from 'react-router-dom';
+import { Link, Redirect, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 
 function Login(props) {
@@ -41,6 +41,8 @@ function Login(props) {
 
   return (
     <>
+      <button><Link to="/">X</Link></button>
+
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="emailOrUsername">
           <Form.Label>Email or Username</Form.Label>

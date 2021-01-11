@@ -1,9 +1,12 @@
 import React from 'react';
 
-function Dashboard() { 
+function Dashboard(props) { 
+  const { username } = props;
+  
   return (
     <>
-      this is Dashboard.jsx
+      <div>Welcome, {username}</div>,
+      <button onClick={logout} >Log Out</button>,
     </>
   );
 }

@@ -41,6 +41,8 @@ function SignUp(props) {
 
   return (
     <>
+      <button><Link to="/">X</Link></button>
+      
       <Form onSubmit={handleSubmit}>
 
         <Form.Group size="lg" controlId="email">
@@ -87,7 +89,7 @@ function SignUp(props) {
         
       </Form>
 
-      <div><Link to="/login">Log In</Link></div>,
+      <div><Link to="/login">Log In</Link></div>
     </>
   );
 }
