@@ -14,6 +14,7 @@ const cookieController = {};
  */
 
 cookieController.createCookie = (req, res, next) => {
+  console.log('create cookie')
   res.cookie('session_id', req.sessionID, { httpOnly: true });
   req.session.user_id = res.locals.user_id;
   delete req.session.userid; // REMOVE
@@ -32,12 +33,14 @@ cookieController.createCookie = (req, res, next) => {
 
 cookieController.validateAndReturnUser = (req, res, next) => {
 
-  console.log('validateAndReturnUser - this is what the req.sessionID is: ', req.sessionID)
-  if (req.sessionID) {
+  console.log('validateAndReturnUser')
+  if (req.session.user_id) {
+    console.log('the user is logged in', req.session)
     const user_id = req.session.user_id;
     db.query(users.getUserById, [user_id], (err, result) => {
       if (result) {
         res.locals.user = result[0];
+        console.log('successfully retrieved user info. sending this back:', res.locals.user)
         return next();
       };
       if (err) {
@@ -46,7 +49,7 @@ cookieController.validateAndReturnUser = (req, res, next) => {
       };
     })
   } else {
-    // then they can't log in
+    console.log('the user is NOT logged in', req.session)
     return res.status(202).send({ message: 'you are not logged in' });
   };
 };

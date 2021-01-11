@@ -29,7 +29,6 @@ function SignUp(props) {
         if (res.status === 202) {
           setError(res.data.message);
         } else {
-          setError(""); // reset error message
           logUserIn(res.data); // log user in & send user data
         };
       })
@@ -87,6 +86,8 @@ function SignUp(props) {
         </Button>
         
       </Form>
+
+      <div><Link to="/login">Log In</Link></div>,
     </>
   );
 }

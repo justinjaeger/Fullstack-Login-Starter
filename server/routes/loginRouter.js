@@ -5,9 +5,8 @@ const loginController = require('../controllers/loginController');
 const cookieController = require('../controllers/cookieController');
 
 // Log in user 
-router.get('/',
+router.post('/',
   loginController.verifyUserExists,
-  loginController.hashPassword,
   loginController.verifyPassword,
   cookieController.createCookie,
   cookieController.validateAndReturnUser,

@@ -26,7 +26,8 @@ queries.getUserIdByUsername = `
 `;
 
 queries.getUserIdByEmail = `
-  SELECT * FROM users
+  SELECT user_id 
+  FROM users
   WHERE email=?
 `;
 

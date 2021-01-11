@@ -1,16 +1,17 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import Component from '../components/Component';
-import { Link, Switch, Route, BrowserRouter as Router } from 'react-router-dom';
+import { Link, Redirect, Route, BrowserRouter as Router } from 'react-router-dom';
 import axios from 'axios';
 
 import Login from './Login';
 import SignUp from './SignUp';
+import Neutral from './Neutral';
 
 const Menu = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(false);
 
   useEffect(() => {
     // Checks if user is logged in
@@ -52,28 +53,33 @@ const Menu = () => {
   function logUserIn(userData) {
     console.log('logging user in with this data: ', userData)
     setUsername(userData.username);
+    setErrorMessage(false);
+    setLoggedIn(true);
   };
 
   // =============================== //
   
   return (
     <>
-      <div>{errorMessage}</div>
+      { errorMessage && <div>ERROR: {errorMessage}</div>}
 
       { loggedIn
         ?
           [
+            <Redirect to="/dashboard" />,
             <div>Welcome, {username}</div>,
             <button onClick={logout} >Log Out</button>,
           ]
         :
           [
-            <div>Welcome, please log in</div>,
-            <div><Link to="/login">Log In</Link></div>,
-            <div><Link to="/signup">Sign Up</Link></div>,
+            <Redirect to="/" />,
+            <div>Log in or sign up</div>,
           ]
       }
 
+      <Route exact path="/">
+        <Neutral />
+      </Route>
       <Route exact path="/login">
         <Login 
           setError={setError}

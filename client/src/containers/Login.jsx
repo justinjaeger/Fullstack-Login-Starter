@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link, Switch, Route } from 'react-router-dom';
+import axios from 'axios';
 
 function Login(props) {
-  console.log('shit');
-  // const { setError, logUserIn } = props;
+  const { setError, logUserIn } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  console.log('props', props)
 
   function validateForm() {
     return emailOrUsername.length > 0 && password.length > 0;
@@ -19,19 +17,22 @@ function Login(props) {
       emailOrUsername,
       password,
     };
-    console.log('submitted this in login:', payload);
+    console.log('submitted this payload', payload);
 
-    axios.get('/login', payload)
+    axios.post('/login', payload)
       .then(res => {
+        console.log('We got a response!')
         // sends 202 with message when error occurs
         if (res.status === 202) {
+          console.log('logging an error in view')
           setError(res.data.message); // send error message
         } else {
-          setError(""); // reset error message
+          console.log('logged user in successfully')
           logUserIn(res.data); // log user in & send user data
         };
       })
       .catch(err => {
+        console.log('someething broke - did not log user in')
         console.log('err', err.response);
       })
 
@@ -63,6 +64,8 @@ function Login(props) {
           Login
         </Button>
       </Form>
+
+      <div><Link to="/signup">Sign Up</Link></div>
     </>
   );
 }
