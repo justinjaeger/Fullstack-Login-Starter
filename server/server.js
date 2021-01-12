@@ -1,13 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const path = require('path');
 const PORT = 3000;
-const dbConnection = require('./connections/connect');
-// const cookieParser = require('cookie-parser');
-const session = require('express-session'); // if keep, don't need cookieParser
-// const store = session.MemoryStore();
-const MySQLStore = require('express-mysql-session')(session);
-const { v4: uuidv4 } = require('uuid');
+const cookieParser = require('cookie-parser');
 
 const routes = require('./routes/mainRouter');
 
@@ -15,27 +11,7 @@ const routes = require('./routes/mainRouter');
 
 // Parsers
 app.use(express.json());
-// app.use(cookieParser());
-
-// For creating sessions
-const sess = {
-  secret: process.env.SESSION_SECRET,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24, // 24 hour expiration
-  },
-  saveUninitialized: false,
-  genid: function(req) { // call function to generate unique session ID
-    return uuidv4();
-  },
-  resave: true, // it communicates to session store that it is still active
-  store: new MySQLStore({ // connect the session store to mysql pool
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    port: 3306,
-  }),
-};
+app.use(cookieParser());
 
 // If we're serving in production mode, do these
 if (process.env.NODE_ENV === 'production') {
@@ -43,12 +19,7 @@ if (process.env.NODE_ENV === 'production') {
   app.get('/', (req, res) => { // serve index.html on the route '/'
     res.status(200).sendFile(path.resolve(__dirname, '../client/src/index.html'));
   });
-  app.set('trust proxy', 1) // trust proxy -- not positive I need this
-  sess.cookie.secure = true // serve secure cookies
 };
-
-// configure session IDs (sess object declared above)
-app.use(session(sess));
 
 // MAIN ROUTER
 app.use('/', routes);

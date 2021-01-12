@@ -21,10 +21,8 @@ function Login(props) {
 
     axios.post('/login', payload)
       .then(res => {
-        console.log('We got a response!')
         // sends 202 with message when error occurs
         if (res.status === 202) {
-          console.log('logging an error in view')
           setError(res.data.message); // send error message
         } else {
           console.log('logged user in successfully')

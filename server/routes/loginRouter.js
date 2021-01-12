@@ -2,28 +2,29 @@ const express = require("express");
 const router = express.Router();
 
 const loginController = require('../controllers/loginController');
-const cookieController = require('../controllers/cookieController');
+const tokenController = require('../controllers/tokenController');
 
 // Log in user 
 router.post('/',
-  loginController.verifyUserExists,
+  loginController.verifyUserAndStoreUserId,
   loginController.verifyPassword,
-  cookieController.createCookie,
-  cookieController.validateAndReturnUser,
+  tokenController.createJWT,
+  loginController.returnUserData,
   (req, res) => {
-    return res.status(200).send(res.locals.user);
+    return res.status(200).send(res.locals.userData);
 });
 
 // Validate user 
 router.get('/validate',
-  cookieController.validateAndReturnUser,
+  tokenController.verifyJWT,
+  loginController.returnUserData,
   (req, res) => {
-    return res.status(200).send(res.locals.user);
+    return res.status(200).send(res.locals.userData);
 });
 
 // Log out user 
 router.get('/logout',
-  cookieController.removeCookie,
+  tokenController.removeCookie,
   (req, res) => {
     return res.status(200).send();
 });

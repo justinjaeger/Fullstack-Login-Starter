@@ -14,11 +14,14 @@ const Main = () => {
   const [errorMessage, setErrorMessage] = useState(false);
 
   useEffect(() => {
-    // Checks if user is logged in
-    console.log('useEffect');
+    /**
+     * Checks if user is logged in
+     * Returns all user data except password
+    */
+    console.log('In useEffect');
     axios.get('/login/validate')
     .then(res => {
-      console.log('res', res);
+      console.log('Res:', res.data);
       const { username } = res.data;
       if (username) {
         setLoggedIn(true);
@@ -28,7 +31,15 @@ const Main = () => {
     .catch(err => {
       console.log('err, could not validate', err.response);
     })
-  }, [loggedIn])
+  }, [loggedIn]);
+
+  // LOG USER IN
+  function logUserIn(userData) {
+    console.log('logging user in with this data: ', userData)
+    setUsername(userData.username);
+    setErrorMessage(false);
+    setLoggedIn(true);
+  };
 
   // LOG USER OUT
   function logout() {
@@ -49,42 +60,48 @@ const Main = () => {
     setErrorMessage(message);
   };
 
-  // LOG USER IN
-  function logUserIn(userData) {
-    console.log('logging user in with this data: ', userData)
-    setUsername(userData.username);
-    setErrorMessage(false);
-    setLoggedIn(true);
-  };
-
   // =============================== //
   
   return (
     <>
       { errorMessage && <div>ERROR: {errorMessage}</div>}
 
-      <Switch>
-        <Route exact path="/">
-          <Neutral />
-        </Route>
-        <Route exact path="/login">
-          <Login 
-            setError={setError}
-            logUserIn={logUserIn}
-          />
-        </Route>
-        <Route exact path="/signup">
-          <SignUp 
-            setError={setError}
-            logUserIn={logUserIn}
-          />
-        </Route>
-        <Route exact path="/dashboard">
-          <Dashboard 
-            username={username}
-          />
-        </Route>
-      </Switch>
+      { loggedIn===false
+      ?
+        [
+        <Redirect to="/"/>,
+        
+        <Switch>
+          <Route exact path="/">
+            <Neutral />
+          </Route>
+          <Route exact path="/login">
+            <Login 
+              setError={setError}
+              logUserIn={logUserIn}
+            />
+          </Route>
+          <Route exact path="/signup">
+            <SignUp 
+              setError={setError}
+              logUserIn={logUserIn}
+            />
+          </Route>
+        </Switch>
+        ]
+
+      :
+        [ 
+          <Redirect to="dashboard"/>,
+
+          <Route exact path="/dashboard">
+            <Dashboard 
+              username={username}
+              logout={logout}
+            />
+          </Route>
+        ]
+      }
     </>
   );  
 };

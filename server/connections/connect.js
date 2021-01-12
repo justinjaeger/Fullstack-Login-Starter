@@ -1,10 +1,4 @@
 const mysql = require('mysql');
-const path = require('path');
-
-// Declare path to locate ENV files
-require('dotenv').config({
-  path: path.resolve(__dirname, '../../.env')
-})
 
 // ENV Variables
 const host = process.env.DB_HOST;

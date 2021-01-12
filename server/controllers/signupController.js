@@ -2,14 +2,15 @@ const db = require('../connections/connect');
 const users = require('../queries/userQueries');
 const profanityFilter = require('../misc/profanityFilter');
 const usernameFilter = require('../misc/usernameFilter');
+const bcrypt = require('bcrypt');
 
 const signupController = {};
 
 // =================================== //
 
 /**
- * Imports functions from the 'misc' folder
- * to determine if username is valid
+ * - determines whether username is valid (no profanity, etc)
+ * - note: Imports helper functions from the 'misc' folder
  */
 
 signupController.validateUsername = async (req, res, next) => {
@@ -35,6 +36,7 @@ signupController.validateUsername = async (req, res, next) => {
  * - passwords match
  * - passwords are correct length
  * If it's not valid, will send a 202 to the front with a message
+ * - on the frontend, 202 messages are programmed to be shown to the user
  */
 
 signupController.validatePassword = async (req, res, next) => {
@@ -57,24 +59,50 @@ signupController.validatePassword = async (req, res, next) => {
 // =================================== //
 
 /**
- * - Takes the input from the frontend and creates a new user in db
+ * - Encrypts the password with bcrypt
+ * - stores it in res.locals.password for next middleware
+ */
+
+signupController.hashPassword = async (req, res, next) => {
+  
+  const { password } = req.body;
+
+  await bcrypt.hash(password, 8, (err, hash) => {
+    if (err) {
+      console.log('error encrypting password');
+      return next(err);
+    };
+    if (hash) {
+      console.log('successfully hashed password', hash)
+      res.locals.hashedPassword = hash;
+      return next();
+    };
+  });
+};
+
+// =================================== //
+
+/**
+ * - Takes the email / username from the frontend
+ * - takes the hashedPassword from the previous middleware
+ * - With them, creates user in DB
+ *  - (next middleware will actually send us the user_id)
  * - Handles errors that MySQL sends back
- *  - if there is an error (e.g. user already exists), we send a 202 with a message to the front
+ * - if there is an error (e.g. user already exists), we send a 202 with a message to the front
  */
 
 signupController.createUser = (req, res, next) => {
 
   const { email, username } = req.body;
-  const password = res.locals.password;
+  const password = res.locals.hashedPassword;
 
   db.query(users.createUser, [email, username, password], (err, result) => {
     if (result) {
-      // make sure we get the id now to pass in res.locals
+      console.log(`successfully created user: ${username}`);
       return next();
     };
     if (err) {
       console.log('error in createUser', err);
-
       let message = 'An error occured';
       if (err.code === 'ER_DUP_ENTRY') {
         if (err.sqlMessage.split('.')[1] === `username'`) {
@@ -84,7 +112,6 @@ signupController.createUser = (req, res, next) => {
           message = 'This email is already registered.';
         }
       };
-      // we're using 202 for sending error messages that are displayed to the user
       return res.status(202).send({ message });
     };
   });
@@ -93,7 +120,7 @@ signupController.createUser = (req, res, next) => {
 // =================================== //
 
 /**
- * - calls the corresponding query
+ * - uses username input to get the user_id
  * - stores user_id in res.locals
  */
 
@@ -112,13 +139,6 @@ signupController.getUserIdByUsername = (req, res, next) => {
       return next(err);
     };
   });
-
-};
-
-// =================================== //
-
-signupController.sendVerificationEmail = (req, res, next) => {
-
 };
 
 // =================================== //
