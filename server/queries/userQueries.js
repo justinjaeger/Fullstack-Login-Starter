@@ -1,5 +1,5 @@
 /**
- * All queries for changes to users / friendship tables
+ * All queries for changes to users table
  */
 
 const queries = {};

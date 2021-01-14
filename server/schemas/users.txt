@@ -11,9 +11,14 @@ CREATE TABLE users (
 );
 
 CREATE TABLE followships (
-  follower_id INT,
-  followee_id INT,
+  follower_id INT NOT NULL,
+  followee_id INT NOT NULL,
   dateCreated DATE,
   PRIMARY KEY (follower_id, followee_id),
   UNIQUE INDEX (follower_id, followee_id)
+);
+
+CREATE TABLE tokens (
+  access_token VARCHAR(250) NOT NULL PRIMARY KEY,
+  user_id INT NOT NULL,
 );
