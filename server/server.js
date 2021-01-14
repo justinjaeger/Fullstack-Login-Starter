@@ -1,19 +1,28 @@
+require('dotenv').config();
 const express = require('express');
-const path = require('path');
-
 const app = express();
+const path = require('path');
 const PORT = 3000;
+const cookieParser = require('cookie-parser');
 
-// JSON parser:
+const routes = require('./routes/mainRouter');
+
+//=============================//
+
+// Parsers
 app.use(express.json());
+app.use(cookieParser());
 
-// Webpack DevServer
+// If we're serving in production mode, do these
 if (process.env.NODE_ENV === 'production') {
   app.use('/dist', express.static(path.resolve(__dirname, '../dist'))); // statically serve everything in the dist folder on the route
   app.get('/', (req, res) => { // serve index.html on the route '/'
     res.status(200).sendFile(path.resolve(__dirname, '../client/src/index.html'));
   });
-}
+};
+
+// MAIN ROUTER
+app.use('/', routes);
 
 // catch-all endpoint handler
 app.use((req, res) => res.status(400).send('Page not found.'));
@@ -23,7 +32,7 @@ app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error!',
     status: 500,
-    message: { err: 'An error occurred!' },
+    message: { err: 'A 500 error occurred!' },
   };
   const errorObj = Object.assign(defaultErr, err);
   return res.status(errorObj.status).json(errorObj.message);

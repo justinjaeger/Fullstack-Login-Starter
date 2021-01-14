@@ -5,7 +5,7 @@ const server = 'http://localhost:3000';
  * REMEMBER: You have to be running the server to run these tests - and has to be production server
  * 
  * Read the docs https://www.npmjs.com/package/supertest
- * Note that we return the evaluation of `request` here! It evaluates to 
+ * Note that we return the evaluation of `request` here! It evaluates to
  * a promise, so Jest knows not to say this test passes until that
  * promise resolves. See https://jestjs.io/docs/en/asynchronous
 */

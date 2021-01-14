@@ -1,0 +1,24 @@
+CREATE TABLE users (
+  user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  username VARCHAR(30) NOT NULL UNIQUE,
+  password VARCHAR(100) NOT NULL,
+  admin BIT(1) DEFAULT 0,
+  authenticated BIT(1) DEFAULT 0,
+  image VARCHAR(10000),
+  dateCreated DATE,
+  lastLoggedIn DATE
+);
+
+CREATE TABLE followships (
+  follower_id INT NOT NULL,
+  followee_id INT NOT NULL,
+  dateCreated DATE,
+  PRIMARY KEY (follower_id, followee_id),
+  UNIQUE INDEX (follower_id, followee_id)
+);
+
+CREATE TABLE tokens (
+  access_token VARCHAR(250) NOT NULL PRIMARY KEY,
+  user_id INT NOT NULL,
+);
