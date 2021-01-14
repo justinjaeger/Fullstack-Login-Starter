@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Switch, Route } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function SignUp(props) {
-  const { setError, logUserIn } = props;
+  const { logUserIn } = props;
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState(false);
 
   function validateForm() {
     return email.length > 0 && password.length > 0;
-  }
+  };
 
   function handleSubmit(event) {
     const payload = {
@@ -43,13 +44,15 @@ function SignUp(props) {
     <>
       <button><Link to="/">X</Link></button>
       
+      { error && <div>ERROR: {error}</div>}
+
       <Form onSubmit={handleSubmit}>
 
         <Form.Group size="lg" controlId="email">
           <Form.Label>Email</Form.Label>
           <Form.Control
             autoFocus
-            type="email"
+            type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)} /* so it actually updates visually when you type */
           />

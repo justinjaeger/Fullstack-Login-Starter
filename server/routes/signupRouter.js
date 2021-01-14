@@ -7,7 +7,7 @@ const tokenController = require('../controllers/tokenController');
 
 // Sign up a user
 router.post('/',
-  signupController.validateUsername,
+  signupController.validateEmailAndUsername,
   signupController.validatePassword,
   signupController.hashPassword,
   signupController.createUser,

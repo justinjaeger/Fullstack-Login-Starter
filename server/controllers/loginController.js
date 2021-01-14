@@ -14,7 +14,7 @@ const loginController = {};
  */
 
 loginController.verifyUserAndStoreUserId = (req, res, next) => {
-
+  console.log('inside verifyUserAndStoreUserId');
   const { emailOrUsername } = req.body;
 
   const entryType = (emailOrUsername.includes('@')) ? 'email' : 'username';
@@ -22,13 +22,18 @@ loginController.verifyUserAndStoreUserId = (req, res, next) => {
 
   db.query(query, [emailOrUsername], (err, result) => {
     if (result) {
+      if (result[0] === undefined) {
+        // if we go in here, it means the user doesn't exist
+        console.log(`error finding ${entryType} in db`, err);
+        return res.status(202).send({ message : `Credentials do not match. Don't have an account? Try signing up`});
+      };
       console.log(`found ${entryType}`, 'of user', result[0].user_id);
       res.locals.user_id = result[0].user_id;
       return next();
     };
     if (err) {
-      console.log(`error finding ${entryType} in db`, err);
-      return res.status(202).send({ message : `Credentials do not match. Don't have an account? Try signing up`});
+      console.log('error in verifyUserAndStoreUserId', err);
+      return next(err);
     };
   });
 };
@@ -42,7 +47,7 @@ loginController.verifyUserAndStoreUserId = (req, res, next) => {
  */
 
 loginController.verifyPassword = (req, res, next) => {
-
+  console.log('inside verifyPassword');
   const { user_id } = res.locals;
   const { password } = req.body;
 
@@ -81,7 +86,7 @@ loginController.verifyPassword = (req, res, next) => {
  */
 
 loginController.returnUserData = (req, res, next) => {
-
+  console.log('inside returnUserData');
   const { user_id } = res.locals;
 
   db.query(users.getUserById, [user_id], (err, result) => {

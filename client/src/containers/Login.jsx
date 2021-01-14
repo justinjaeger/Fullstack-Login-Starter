@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link, Redirect, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 
 function Login(props) {
-  const { setError, logUserIn } = props;
+  const { logUserIn } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
 
   function validateForm() {
     return emailOrUsername.length > 0 && password.length > 0;
@@ -40,6 +41,8 @@ function Login(props) {
   return (
     <>
       <button><Link to="/">X</Link></button>
+
+      { error && <div>ERROR: {error}</div>}
 
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="emailOrUsername">

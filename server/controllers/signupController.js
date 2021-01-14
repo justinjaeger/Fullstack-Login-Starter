@@ -13,9 +13,13 @@ const signupController = {};
  * - note: Imports helper functions from the 'misc' folder
  */
 
-signupController.validateUsername = async (req, res, next) => {
+signupController.validateEmailAndUsername = async (req, res, next) => {
+  console.log('inside validateUsername');
+  const { email, username } = req.body;
 
-  const { username } = req.body;
+  if (!email.includes('@') || !email.includes('.') ) {
+    return res.status(202).send({ message : 'this email is not properly formatted' });
+  };
 
   const filterResult = usernameFilter(username);
   if (filterResult.status === false) {
@@ -40,7 +44,7 @@ signupController.validateUsername = async (req, res, next) => {
  */
 
 signupController.validatePassword = async (req, res, next) => {
-
+  console.log('inside validatePassword');
   const { password, confirmPassword } = req.body;
 
   if (password !== confirmPassword) {
@@ -64,7 +68,7 @@ signupController.validatePassword = async (req, res, next) => {
  */
 
 signupController.hashPassword = async (req, res, next) => {
-  
+  console.log('inside hashPassword');
   const { password } = req.body;
 
   await bcrypt.hash(password, 8, (err, hash) => {
@@ -92,7 +96,7 @@ signupController.hashPassword = async (req, res, next) => {
  */
 
 signupController.createUser = (req, res, next) => {
-
+  console.log('inside createUser');
   const { email, username } = req.body;
   const password = res.locals.hashedPassword;
 
@@ -125,7 +129,7 @@ signupController.createUser = (req, res, next) => {
  */
 
 signupController.getUserIdByUsername = (req, res, next) => {
-
+  console.log('inside getUserIdByUsername');
   const { username } = req.body;
 
   db.query(users.getUserIdByUsername, [username], (err, result) => {

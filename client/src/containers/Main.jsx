@@ -19,7 +19,7 @@ const Main = () => {
      * Returns all user data except password
     */
     console.log('In useEffect');
-    axios.get('/login/validate')
+    axios.get('/login/getUserId')
     .then(res => {
       console.log('Res:', res.data);
       const { username } = res.data;
@@ -64,7 +64,7 @@ const Main = () => {
   
   return (
     <>
-      { errorMessage && <div>ERROR: {errorMessage}</div>}
+      {/* { errorMessage && <div>ERROR: {errorMessage}</div>} */}
 
       { loggedIn===false
       ?
@@ -77,13 +77,11 @@ const Main = () => {
           </Route>
           <Route exact path="/login">
             <Login 
-              setError={setError}
               logUserIn={logUserIn}
             />
           </Route>
           <Route exact path="/signup">
             <SignUp 
-              setError={setError}
               logUserIn={logUserIn}
             />
           </Route>

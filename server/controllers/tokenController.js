@@ -18,9 +18,9 @@ const tokenController = {};
 tokenController.createAccessToken = (req, res, next) => {
   console.log('inside createAccessToken');
 
-  const user_id = res.locals.user_id;
+  const { user_id } = res.locals;
   const accessPayload = { user_id };
-  const accessOptions = { expiresIn: '10s'};
+  const accessOptions = { expiresIn: '10m'};
 
   const access_token = jwt.sign(accessPayload, ACCESS_TOKEN_SECRET, accessOptions);
 
@@ -62,7 +62,7 @@ tokenController.createAccessToken = (req, res, next) => {
  */
 
 tokenController.verifyToken = (req, res, next) => {
-
+  console.log('inside verifyToken');
   const access_token = req.headers.cookie.split('=')[1];
 
   jwt.verify(access_token, ACCESS_TOKEN_SECRET, (err, userData) => {
@@ -160,6 +160,7 @@ tokenController.deleteAllUserTokens = (req, res, next) => {
 // =================================== //
 
 tokenController.removeCookie = (req, res, next) => {
+  console.log('inside removeCookie');
   res.clearCookie('access_token');
   return next();
 };
