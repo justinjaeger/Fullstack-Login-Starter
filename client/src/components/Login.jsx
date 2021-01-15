@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
-import { Link, Redirect, Switch, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function Login(props) {
-  const { login, redirect, notify, username } = props;
+
+  const { login, notify, username } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,26 +18,26 @@ function Login(props) {
   };
 
   function handleSubmit(event) {
+
     const payload = {
       emailOrUsername,
       password,
     };
-    console.log('submitted this payload', payload);
+
+    console.log('submitted payload: ', payload);
 
     axios.post('/login', payload)
       .then(res => {
-        console.log('success so far')
-        // sends 202 with message when error occurs
+        /* when something about the input is wrong, server sends 202 with message */
         if (res.status === 202) {
-          notify(res.data.message); // send error message
+          notify(res.data.message);
         } else {
-          console.log('logged user in successfully')
+          console.log('logged user in successfully');
           login(res.data); // log user in & send user data
         };
       })
       .catch(err => {
-        console.log('someething broke - did not log user in')
-        console.log('err', err.response);
+        console.log('something broke - did not log user in', err.response);
       })
 
     event.preventDefault(); /** prevents it from refreshing */
@@ -44,7 +45,7 @@ function Login(props) {
 
   return (
     <>
-      <button onClick={redirect} ><Link to="/">X</Link></button>
+      <button><Link to="/">X</Link></button>
 
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="emailOrUsername">

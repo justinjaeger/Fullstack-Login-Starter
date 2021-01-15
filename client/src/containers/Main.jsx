@@ -1,49 +1,54 @@
 import React from 'react';
-import { useState, useEffect, useReducer } from 'react';
-import { Link, Switch, Redirect, Route, BrowserRouter as Router } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Switch, Redirect, Route } from 'react-router-dom';
 import axios from 'axios';
 
-import Login from './Login';
-import SignUp from './SignUp';
-import Neutral from './Neutral';
-import Dashboard from './Dashboard';
+import Login from '../components/Login';
+import SignUp from '../components/SignUp';
+import Neutral from '../components/Neutral';
+import Dashboard from '../components/Dashboard';
 
 const Main = () => {
-  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
-  const [route, setRoute] = useState("/"); // home, login, signup
+  const [route, setRoute] = useState("/"); // home, login, signup - 
   const [message, setMessage] = useState(false);
 
   useEffect(() => {
+    console.log('useEffect firing');
     /**
-     * Checks for cookies
+     * Checks if user is logged in
      * If user is logged in, it finds the user_id to populate the page with
      * If not logged in, check if the user just authenticated their email
     */
-    console.log('useEffect firing');
-    console.log('currentRoute', route);
-    if (message) setMessage(message);
-    // check for "access_token" cookie
-    if (document.cookie.includes('access_token')) {
-      axios.get('/login/getUserId')
-      .then(res => {
-        console.log('Res:', res.data);
-        const { username } = res.data;
-        if (username) {
-          setLoggedIn(true);
-          setUsername(username);
-        };
-      })
-      .catch(err => {
-        console.log('err, could not validate', err.response);
-      })
-    // if no access_token, check for "authenticated" cookie, which exists after user validates email
-    } else if (document.cookie.includes('authenticated')) {
+    axios.get('/login/verifyUserAndReturnUserId')
+    .then(res => {
+      console.log('Res:', res.data);
+      const { username } = res.data;
+      if (username) {
+        setLoggedIn(true);
+        setUsername(username);
+      };
+    })
+    .catch(err => {
+      console.log('err, could not validate', err.response);
+    })
+
+    /* Authenticated cookie exists affter we click the verification link in our email */
+    if (document.cookie.includes('authenticated')) {
+      /** 
+       * This does 3 things:
+       * 1. Route user to /login
+       *    - this setRoute() works since it's a new page we got linked to, but would not work normally
+       *    - it also kind of locks you into this page, since it redirects you to login every refresh. not great
+       * 2. The cookie stores the username, so we make that the input for them
+       * 3. And we send the message that tells them to enter password
+       * Overall, this is quite a bad solution but I'll fix it later
+       */
       const un = document.cookie.split('XXX')[1];
-      setUsername(un);
       setRoute("/login");
+      setUsername(un);
       setMessage("Email verified. Please enter your password");
     };
   }, [loggedIn]);
@@ -60,7 +65,8 @@ const Main = () => {
   function logout() {
     axios.get('/login/logout')
     .then(res => {
-      console.log('res', res);
+      console.log('logged user out successfully');
+      setMessage("");
       setLoggedIn(false);
       setUsername("");
     })
@@ -69,20 +75,9 @@ const Main = () => {
     })
   };
 
-  // REDIRECT
-  function redirect(routeEntry, messageEntry) {
-    console.log('setting Route: ', routeEntry)
-    setRoute(routeEntry);
-    if (messageEntry) setMessage(messageEntry);
-    // needs to force a refresh so it's immediate
-    console.log('forcing update')
-    forceUpdate();
-  };
-
   // SET MESSAGE
   function notify(entry) {
     setMessage(entry);
-    forceUpdate();
   };
 
   // =============================== //
@@ -103,13 +98,11 @@ const Main = () => {
             <Login 
               username={username}
               login={login}
-              redirect={redirect}
               notify={notify}
             />
           </Route>
           <Route exact path="/signup">
             <SignUp 
-              redirect={redirect}
               notify={notify}
             />
           </Route>

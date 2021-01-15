@@ -1,54 +1,43 @@
-const db = require('../connections/connect');
-const users = require('../queries/userQueries');
-const nodemailer = require('nodemailer');
 const { encrypt, decrypt } = require('../misc/encrypt');
-const PORT = (process.env.NODE_ENV==="production") ? 3000 : 8080;
+const mailHelper = require('../misc/mailHelper');
 
 const emailController = {};
 
 // =================================== //
 
 /**
- * 
+ * - deconstructs email and username from the body
+ * - encrypts and encodes the username so we can pass it into URL
+ *   - function of this is so someone can't easily make this request by typing in the address box
+ * - creates a url to send user to when they verify
+ * - utilizes a helper function, mailHelper (check that out for all the configuration)
+ * - sends the email
  */
 
 emailController.sendVerificationEmail = (req, res, next) => {
   console.log('inside sendVerificationEmail');
+
   const { email, username } = req.body;
 
-  const transport = nodemailer.createTransport({
-    host: process.env.MAILTRAP_HOST,
-    port: process.env.MAILTRAP_PORT,
-    auth: {
-      user: process.env.MAILTRAP_AUTH_USER,
-      pass: process.env.MAILTRAP_AUTH_PASSWORD
-    }
-  });
-
+  const PORT = (process.env.NODE_ENV==="production") ? 3000 : 8080;
   const encryptedUsername = encrypt(username);
-  const encoded = encodeURIComponent(encryptedUsername);
+  const encodedUsername = encodeURIComponent(encryptedUsername);
+  const url = `http://localhost:${PORT}/signup/verify-email/?user=${encodedUsername}`
 
   console.log('encrypted username: ', encryptedUsername);
-  console.log('we are using this port:', PORT);
-  const mailOptions = {
-    from: '"Movie Expert" <noreply@website.com>',
-    to: `${email}`,
-    subject: 'Verify your email',
-    text: `Hi, ${username}. Please click the link to verify your email`, 
-    html: `
-      <b>Hey there! </b>
-      <div>Click this link to verify your email</div>
-      <button><a href="http://localhost:${PORT}/signup/verify-email/?user=${encoded}">Verify account</a></button>
-    `,
-  };
+
+  /* utilizes the helper function, which exports an object of objects based on input */
+  const { transport, options } = mailHelper(email, username, url);
   
-  transport.sendMail(mailOptions, (error, info) => {
+  transport.sendMail(options, (error, info) => {
+
     if (error) {
       console.log('error', error);
       return next(error);
     };
+    
     if (info) {
-      console.log('Email sent: ' + info);
+      console.log('Email sent: ', info);
       return next();
     };
   });
@@ -57,22 +46,23 @@ emailController.sendVerificationEmail = (req, res, next) => {
 // =================================== //
 
 /**
- * - received encrypted username in the params
- * - decrypts it
+ * - received encrypted & encoded username in the query
+ * - decodes & decrypts it (should be back to the normal username now)
  * - stores normal username in res.locals.username
  */
 
 emailController.decryptUsername = (req, res, next) => {
   console.log('inside decryptUsername');
-  const { user } = req.query;
 
-  console.log('query:',user);
+  const { user } = req.query;
 
   const decoded = decodeURIComponent(user);
   const decryptedUsername = decrypt(decoded);
+
   console.log('decrypted username: ', decryptedUsername);
 
   res.locals.username = decryptedUsername;
+
   return next();
 };
 

@@ -9,8 +9,6 @@ const routes = require('./routes/mainRouter');
 
 //=============================//
 
-console.log('node env', process.env.NODE_ENV)
-
 // Parsers
 app.use(express.json());
 app.use(cookieParser());

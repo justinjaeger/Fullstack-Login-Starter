@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 const signupController = require('../controllers/signupController');
-const loginController = require('../controllers/loginController');
 const tokenController = require('../controllers/tokenController');
 const emailController = require('../controllers/emailController');
 
@@ -44,7 +43,7 @@ router.get('/delete-account',
     return res.status(202).send({ message: 'account successfully deleted'});
 });
 
-// catch all 
+// If we refresh on /signup it just goes back to homepage
 router.get('/', (req, res) => {
   return res.redirect('/');
 });

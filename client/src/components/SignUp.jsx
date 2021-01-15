@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, Switch, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function SignUp(props) {
-  const { redirect, notify} = props;
+
+  const { notify } = props;
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,22 +16,22 @@ function SignUp(props) {
   };
 
   function handleSubmit(event) {
+
     const payload = {
       email,
       username,
       password,
       confirmPassword
     };
+
     console.log('submitted', payload);
 
+    /* NOTE: The /signup POST request will send the user a verification email, so it won't return anything back except a message */
+    
     axios.post('/signup', payload)
       .then(res => {
-        // sends 202 with message when error occurs
-        console.log('message: ', res.data.message);
+        /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
         notify(res.data.message);
-        if (res.status === 200) {
-          redirect(res.data.route, res.data.message);
-        };
       })
       .catch(err => {
         console.log('err', err.response);

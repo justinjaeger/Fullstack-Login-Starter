@@ -10,6 +10,7 @@ const signupController = {};
 // =================================== //
 
 /**
+ * Checks that email and username are formatted properly
  * - determines whether username is valid (no profanity, etc)
  * - note: Imports helper functions from the 'misc' folder
  */
@@ -37,23 +38,24 @@ signupController.validateEmailAndUsername = async (req, res, next) => {
 // =================================== //
 
 /**
- * Goes through series of checks to ensure that:
- * - passwords match
- * - passwords are correct length
+ * Checks that password is formatted properly
  * If it's not valid, will send a 202 to the front with a message
  * - on the frontend, 202 messages are programmed to be shown to the user
  */
 
 signupController.validatePassword = async (req, res, next) => {
   console.log('inside validatePassword');
+  
   const { password, confirmPassword } = req.body;
 
   if (password !== confirmPassword) {
     return res.status(202).send({ message : 'passwords do not match'});
   };
+
   if (password.length < 8) {
     return res.status(202).send({ message : 'password must be more than 8 characters'});
   };
+
   if (password.length > 20) {
     return res.status(202).send({ message : 'password must be less than 20 characters'});
   };
@@ -70,6 +72,7 @@ signupController.validatePassword = async (req, res, next) => {
 
 signupController.hashPassword = async (req, res, next) => {
   console.log('inside hashPassword');
+
   const { password } = req.body;
 
   await bcrypt.hash(password, 8, (err, hash) => {
@@ -88,6 +91,7 @@ signupController.hashPassword = async (req, res, next) => {
 // =================================== //
 
 /**
+ * Creates a new user in DB
  * - Takes the email / username from the frontend
  * - takes the hashedPassword from the previous middleware
  * - With them, creates user in DB
@@ -98,17 +102,21 @@ signupController.hashPassword = async (req, res, next) => {
 
 signupController.createUser = (req, res, next) => {
   console.log('inside createUser');
+
   const { email, username } = req.body;
   const password = res.locals.hashedPassword;
 
   db.query(users.createUser, [email, username, password], (err, result) => {
+
     if (result) {
       console.log(`successfully created user: ${username}`);
       return next();
     };
+
     if (err) {
-      console.log('error in createUser', err);
-      let message = 'An error occured';
+      console.log('error in createUser', err.sqlMessage);
+      let message = 'An error occured whlie creating user';
+
       if (err.code === 'ER_DUP_ENTRY') {
         if (err.sqlMessage.split('.')[1] === `username'`) {
           message = 'This username is already registered.';
@@ -117,6 +125,7 @@ signupController.createUser = (req, res, next) => {
           message = 'This email is already registered.';
         }
       };
+
       return res.status(202).send({ message });
     };
   });
@@ -124,59 +133,25 @@ signupController.createUser = (req, res, next) => {
 
 // =================================== //
 
-signupController.sendVerificationEmail = (req, res, next) => {
-  console.log('inside sendVerificationEmail');
-  const { email, username } = req.body;
-
-  const transport = nodemailer.createTransport({
-    host: process.env.MAILTRAP_HOST,
-    port: process.env.MAILTRAP_PORT,
-    auth: {
-      user: process.env.MAILTRAP_AUTH_USER,
-      pass: process.env.MAILTRAP_AUTH_PASSWORD
-    }
-  });
-  
-  const mailOptions = {
-    from: '"Example Team" <noreply@website.com>',
-    to: `${email}`,
-    subject: 'Verify your email',
-    text: `Hi, ${username}. Please click the link to verify your email`, 
-    html: `
-      <b>Hey there! </b>
-      <div>Click this link to verify your email</div>
-      <button><a href="http://localhost:8080/signup/verify-email/${username}">Verify account</a></button>
-    `,
-  };
-  
-  transport.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log('error', error);
-      return next(error);
-    };
-    if (info) {
-      console.log('Email sent: ' + info);
-      return next();
-    };
-  });
-};
-
-// =================================== //
-
 /**
- * - takes the username from params
- * - authenticates the user
+ * Changes the authentication status of the user from 0 -> 1 (false -> true) in database
+ * Does this when they click the email verification link
+ * - takes the username from locals -- was deconstructed from req.query in last function
+ * - authenticates the user in the db
  */
 
 signupController.authenticateUser = (req, res, next) => {
   console.log('inside authenticateUser');
+
   const { username } = res.locals;
   
   db.query(users.authenticateUser, [username], (err, result) => {
+
     if (result) {
       console.log('should have authenticated user: ', result);
       return next();
     };
+
     if (err) {
       console.log('error in authenticateUser', err);
       return next(err);
@@ -187,20 +162,24 @@ signupController.authenticateUser = (req, res, next) => {
 // =================================== //
 
 /**
+ * Return the user ID with only the username
  * - uses username input to get the user_id
  * - stores user_id in res.locals
  */
 
 signupController.getUserIdByUsername = (req, res, next) => {
   console.log('inside getUserIdByUsername');
+
   const { username } = req.body;
 
   db.query(users.getUserIdByUsername, [username], (err, result) => {
+
     if (result) {
       const { user_id } = result[0];
       res.locals.user_id = user_id;
       return next();
     };
+
     if (err) {
       console.log('error in getUserIdByUsername', err);
       return next(err);
@@ -211,24 +190,30 @@ signupController.getUserIdByUsername = (req, res, next) => {
 // =================================== //
 
 /**
+ * Deletes your whole account
  * - user_id sent in body
  * - deletes the user's account
  * - make sure to protect this route 
+ * NOTE: this could definitely use some refining, haven't paid too much attention to it
  */
 
 signupController.deleteAccount = (req, res, next) => {
   console.log('inside deleteAccount');
+
   const { user_id } = req.body;
 
   db.query(users.deleteAccount, [user_id], (err, result) => {
     if (result) {
+
       if (result.affectedRows === 0) {
         console.log('Could not find account to delete', err);
         return next({ message : 'Error: could not delete account' });
       };
+
       console.log('successfully deleted account')
       return next();
     };
+
     if (err) {
       console.log('error in deleteAccount', err);
       return next(err);
