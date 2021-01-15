@@ -1,38 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
-import { Link, Redirect, Switch, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function Login(props) {
-  const { logUserIn } = props;
+
+  const { login, notify, username } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (username) setEmailOrUsername(username);
+  });
 
   function validateForm() {
     return emailOrUsername.length > 0 && password.length > 0;
   };
 
   function handleSubmit(event) {
+
     const payload = {
       emailOrUsername,
       password,
     };
-    console.log('submitted this payload', payload);
+
+    console.log('submitted payload: ', payload);
 
     axios.post('/login', payload)
       .then(res => {
-        // sends 202 with message when error occurs
+        /* when something about the input is wrong, server sends 202 with message */
         if (res.status === 202) {
-          setError(res.data.message); // send error message
+          notify(res.data.message);
         } else {
-          console.log('logged user in successfully')
-          logUserIn(res.data); // log user in & send user data
+          console.log('logged user in successfully');
+          login(res.data); // log user in & send user data
         };
       })
       .catch(err => {
-        console.log('someething broke - did not log user in')
-        console.log('err', err.response);
+        console.log('something broke - did not log user in', err.response);
       })
 
     event.preventDefault(); /** prevents it from refreshing */
@@ -41,8 +46,6 @@ function Login(props) {
   return (
     <>
       <button><Link to="/">X</Link></button>
-
-      { error && <div>ERROR: {error}</div>}
 
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="emailOrUsername">

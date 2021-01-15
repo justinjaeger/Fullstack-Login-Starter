@@ -1,51 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { Link, Switch, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function SignUp(props) {
-  const { logUserIn } = props;
+
+  const { notify } = props;
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState(false);
 
   function validateForm() {
     return email.length > 0 && password.length > 0;
   };
 
   function handleSubmit(event) {
+
     const payload = {
       email,
       username,
       password,
       confirmPassword
     };
+
     console.log('submitted', payload);
 
+    /* NOTE: The /signup POST request will send the user a verification email, so it won't return anything back except a message */
+    
     axios.post('/signup', payload)
       .then(res => {
-        // sends 202 with message when error occurs
-        if (res.status === 202) {
-          setError(res.data.message);
-        } else {
-          logUserIn(res.data); // log user in & send user data
-        };
+        /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
+        notify(res.data.message);
       })
       .catch(err => {
         console.log('err', err.response);
       })
 
-    event.preventDefault(); /** prevents it from refreshing */
+    event.preventDefault(); /* prevents it from refreshing */
   };
 
   return (
     <>
       <button><Link to="/">X</Link></button>
       
-      { error && <div>ERROR: {error}</div>}
-
       <Form onSubmit={handleSubmit}>
 
         <Form.Group size="lg" controlId="email">
@@ -95,6 +93,6 @@ function SignUp(props) {
       <div><Link to="/login">Log In</Link></div>
     </>
   );
-}
+};
 
 export default SignUp;
