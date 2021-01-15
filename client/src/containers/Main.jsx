@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import { Link, Switch, Redirect, Route, BrowserRouter as Router } from 'react-router-dom';
 import axios from 'axios';
 
@@ -9,35 +9,50 @@ import Neutral from './Neutral';
 import Dashboard from './Dashboard';
 
 const Main = () => {
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
-  const [errorMessage, setErrorMessage] = useState(false);
+  const [route, setRoute] = useState("/"); // home, login, signup
+  const [message, setMessage] = useState(false);
 
   useEffect(() => {
     /**
-     * Checks if user is logged in
-     * Returns all user data except password
+     * Checks for cookies
+     * If user is logged in, it finds the user_id to populate the page with
+     * If not logged in, check if the user just authenticated their email
     */
-    console.log('In useEffect');
-    axios.get('/login/getUserId')
-    .then(res => {
-      console.log('Res:', res.data);
-      const { username } = res.data;
-      if (username) {
-        setLoggedIn(true);
-        setUsername(username);
-      };
-    })
-    .catch(err => {
-      console.log('err, could not validate', err.response);
-    })
+    console.log('useEffect firing');
+    console.log('currentRoute', route);
+    if (message) setMessage(message);
+    // check for "access_token" cookie
+    if (document.cookie.includes('access_token')) {
+      axios.get('/login/getUserId')
+      .then(res => {
+        console.log('Res:', res.data);
+        const { username } = res.data;
+        if (username) {
+          setLoggedIn(true);
+          setUsername(username);
+        };
+      })
+      .catch(err => {
+        console.log('err, could not validate', err.response);
+      })
+    // if no access_token, check for "authenticated" cookie, which exists after user validates email
+    } else if (document.cookie.includes('authenticated')) {
+      const un = document.cookie.split('XXX')[1];
+      setUsername(un);
+      setRoute("/login");
+      setMessage("Email verified. Please enter your password");
+    };
   }, [loggedIn]);
 
   // LOG USER IN
-  function logUserIn(userData) {
+  function login(userData) {
     console.log('logging user in with this data: ', userData)
+    setMessage("");
     setUsername(userData.username);
-    setErrorMessage(false);
     setLoggedIn(true);
   };
 
@@ -54,35 +69,48 @@ const Main = () => {
     })
   };
 
-  // SET ERROR MESSAGE
-  function setError(message) {
-    console.log('setting error message');
-    setErrorMessage(message);
+  // REDIRECT
+  function redirect(routeEntry, messageEntry) {
+    console.log('setting Route: ', routeEntry)
+    setRoute(routeEntry);
+    if (messageEntry) setMessage(messageEntry);
+    // needs to force a refresh so it's immediate
+    console.log('forcing update')
+    forceUpdate();
+  };
+
+  // SET MESSAGE
+  function notify(entry) {
+    setMessage(entry);
+    forceUpdate();
   };
 
   // =============================== //
   
   return (
     <>
-      {/* { errorMessage && <div>ERROR: {errorMessage}</div>} */}
+      { message && <div>{message}</div>}
 
       { loggedIn===false
       ?
         [
-        <Redirect to="/"/>,
-        
+        <Redirect to={route}/>,
         <Switch>
           <Route exact path="/">
             <Neutral />
           </Route>
           <Route exact path="/login">
             <Login 
-              logUserIn={logUserIn}
+              username={username}
+              login={login}
+              redirect={redirect}
+              notify={notify}
             />
           </Route>
           <Route exact path="/signup">
             <SignUp 
-              logUserIn={logUserIn}
+              redirect={redirect}
+              notify={notify}
             />
           </Route>
         </Switch>

@@ -3,6 +3,7 @@ const users = require('../queries/userQueries');
 const profanityFilter = require('../misc/profanityFilter');
 const usernameFilter = require('../misc/usernameFilter');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 
 const signupController = {};
 
@@ -123,6 +124,68 @@ signupController.createUser = (req, res, next) => {
 
 // =================================== //
 
+signupController.sendVerificationEmail = (req, res, next) => {
+  console.log('inside sendVerificationEmail');
+  const { email, username } = req.body;
+
+  const transport = nodemailer.createTransport({
+    host: process.env.MAILTRAP_HOST,
+    port: process.env.MAILTRAP_PORT,
+    auth: {
+      user: process.env.MAILTRAP_AUTH_USER,
+      pass: process.env.MAILTRAP_AUTH_PASSWORD
+    }
+  });
+  
+  const mailOptions = {
+    from: '"Example Team" <noreply@website.com>',
+    to: `${email}`,
+    subject: 'Verify your email',
+    text: `Hi, ${username}. Please click the link to verify your email`, 
+    html: `
+      <b>Hey there! </b>
+      <div>Click this link to verify your email</div>
+      <button><a href="http://localhost:8080/signup/verify-email/${username}">Verify account</a></button>
+    `,
+  };
+  
+  transport.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('error', error);
+      return next(error);
+    };
+    if (info) {
+      console.log('Email sent: ' + info);
+      return next();
+    };
+  });
+};
+
+// =================================== //
+
+/**
+ * - takes the username from params
+ * - authenticates the user
+ */
+
+signupController.authenticateUser = (req, res, next) => {
+  console.log('inside authenticateUser');
+  const { username } = res.locals;
+  
+  db.query(users.authenticateUser, [username], (err, result) => {
+    if (result) {
+      console.log('should have authenticated user: ', result);
+      return next();
+    };
+    if (err) {
+      console.log('error in authenticateUser', err);
+      return next(err);
+    };
+  });
+};
+
+// =================================== //
+
 /**
  * - uses username input to get the user_id
  * - stores user_id in res.locals
@@ -140,6 +203,34 @@ signupController.getUserIdByUsername = (req, res, next) => {
     };
     if (err) {
       console.log('error in getUserIdByUsername', err);
+      return next(err);
+    };
+  });
+};
+
+// =================================== //
+
+/**
+ * - user_id sent in body
+ * - deletes the user's account
+ * - make sure to protect this route 
+ */
+
+signupController.deleteAccount = (req, res, next) => {
+  console.log('inside deleteAccount');
+  const { user_id } = req.body;
+
+  db.query(users.deleteAccount, [user_id], (err, result) => {
+    if (result) {
+      if (result.affectedRows === 0) {
+        console.log('Could not find account to delete', err);
+        return next({ message : 'Error: could not delete account' });
+      };
+      console.log('successfully deleted account')
+      return next();
+    };
+    if (err) {
+      console.log('error in deleteAccount', err);
       return next(err);
     };
   });

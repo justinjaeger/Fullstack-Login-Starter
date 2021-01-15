@@ -4,10 +4,13 @@ import { Link, Redirect, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 
 function Login(props) {
-  const { logUserIn } = props;
+  const { login, redirect, notify, username } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (username) setEmailOrUsername(username);
+  });
 
   function validateForm() {
     return emailOrUsername.length > 0 && password.length > 0;
@@ -22,12 +25,13 @@ function Login(props) {
 
     axios.post('/login', payload)
       .then(res => {
+        console.log('success so far')
         // sends 202 with message when error occurs
         if (res.status === 202) {
-          setError(res.data.message); // send error message
+          notify(res.data.message); // send error message
         } else {
           console.log('logged user in successfully')
-          logUserIn(res.data); // log user in & send user data
+          login(res.data); // log user in & send user data
         };
       })
       .catch(err => {
@@ -40,9 +44,7 @@ function Login(props) {
 
   return (
     <>
-      <button><Link to="/">X</Link></button>
-
-      { error && <div>ERROR: {error}</div>}
+      <button onClick={redirect} ><Link to="/">X</Link></button>
 
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="emailOrUsername">

@@ -17,6 +17,7 @@ const tokenController = {};
 
 tokenController.createAccessToken = (req, res, next) => {
   console.log('inside createAccessToken');
+  res.clearCookie('authenticated');
 
   const { user_id } = res.locals;
   const accessPayload = { user_id };

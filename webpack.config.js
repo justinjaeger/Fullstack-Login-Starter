@@ -17,6 +17,7 @@ module.exports = {
       '/login': 'http://localhost:3000',
       '/signup': 'http://localhost:3000',
       '/user': 'http://localhost:3000',
+      '/fuck': 'http://localhost:3000',
     },
     hot: true,
     historyApiFallback: true,

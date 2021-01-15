@@ -47,6 +47,12 @@ queries.login = `
   WHERE user_id=?
 `;
 
+queries.authenticateUser = `
+  UPDATE users
+  SET authenticated=1
+  WHERE username=?
+`;
+
 queries.makeAdmin = `
   UPDATE users
   SET admin=1
@@ -62,6 +68,11 @@ queries.changePassword = `
 queries.addUserImage = `
   UPDATE users(image)
   SET image=?
+  WHERE user_id=?
+`;
+
+queries.deleteAccount = `
+  DELETE FROM users
   WHERE user_id=?
 `;
 

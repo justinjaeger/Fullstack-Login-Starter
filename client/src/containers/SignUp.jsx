@@ -4,12 +4,11 @@ import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function SignUp(props) {
-  const { logUserIn } = props;
+  const { redirect, notify} = props;
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState(false);
 
   function validateForm() {
     return email.length > 0 && password.length > 0;
@@ -27,25 +26,23 @@ function SignUp(props) {
     axios.post('/signup', payload)
       .then(res => {
         // sends 202 with message when error occurs
-        if (res.status === 202) {
-          setError(res.data.message);
-        } else {
-          logUserIn(res.data); // log user in & send user data
+        console.log('message: ', res.data.message);
+        notify(res.data.message);
+        if (res.status === 200) {
+          redirect(res.data.route, res.data.message);
         };
       })
       .catch(err => {
         console.log('err', err.response);
       })
 
-    event.preventDefault(); /** prevents it from refreshing */
+    event.preventDefault(); /* prevents it from refreshing */
   };
 
   return (
     <>
       <button><Link to="/">X</Link></button>
       
-      { error && <div>ERROR: {error}</div>}
-
       <Form onSubmit={handleSubmit}>
 
         <Form.Group size="lg" controlId="email">
@@ -95,6 +92,6 @@ function SignUp(props) {
       <div><Link to="/login">Log In</Link></div>
     </>
   );
-}
+};
 
 export default SignUp;
