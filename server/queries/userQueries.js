@@ -41,6 +41,12 @@ queries.getPasswordById = `
   WHERE user_id=?
 `;
 
+queries.updatePassword = `
+  UPDATE users
+  SET password=?
+  WHERE user_id=?
+`;
+
 queries.login = `
   UPDATE users
   SET lastLoggedIn=DATE()

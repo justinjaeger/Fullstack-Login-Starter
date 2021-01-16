@@ -21,16 +21,14 @@ router.post('/',
   signupController.createUser,
   emailController.sendVerificationEmail,
   (req, res) => {
-    return res.status(200).send({ 
-      route: '/',
-      message: `Please verify the email sent to ${req.body.email} to complete log in.` 
-    });
+    return res.status(200).send({ message: `Please verify the email sent to ${req.body.email} to complete log in.` });
 });
 
 router.get('/verify-email', // ?username={username}
   emailController.decryptUsername,
   signupController.authenticateUser,
   (req, res) => {
+    res.clearCookie('reset_password');
     res.cookie('authenticated', `XXX${res.locals.username}XXX`);
     return res.redirect('/');
 });

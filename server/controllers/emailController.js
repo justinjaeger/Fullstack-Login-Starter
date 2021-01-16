@@ -24,12 +24,48 @@ emailController.sendVerificationEmail = (req, res, next) => {
   const encodedUsername = encodeURIComponent(encryptedUsername);
   const url = `http://localhost:${PORT}/signup/verify-email/?user=${encodedUsername}`
 
-  console.log('encrypted username: ', encryptedUsername);
+  console.log('encoded username: ', encodedUsername);
 
   /* utilizes the helper function, which exports an object of objects based on input */
-  const { transport, options } = mailHelper(email, username, url);
+  const { transport, emailVerificationOptions } = mailHelper(email, url, username);
   
-  transport.sendMail(options, (error, info) => {
+  transport.sendMail(emailVerificationOptions, (error, info) => {
+
+    if (error) {
+      console.log('error', error);
+      return next(error);
+    };
+    
+    if (info) {
+      console.log('Email sent: ', info);
+      return next();
+    };
+  });
+};
+
+// =================================== //
+
+/**
+ * - get email from req.body
+ * - send email with a link to a protected resetPassword route
+ */
+
+emailController.sendResetPasswordEmail = (req, res, next) => {
+  console.log('inside sendResetPasswordEmail');
+
+  const { email } = req.body;
+
+  const PORT = (process.env.NODE_ENV==="production") ? 3000 : 8080;
+  const encryptedEmail = encrypt(email);
+  const encodedEmail = encodeURIComponent(encryptedEmail);
+  const url = `http://localhost:${PORT}/login/resetPassword/?email=${encodedEmail}`
+
+  console.log('encoded email: ', encodedEmail);
+
+  /* utilizes the helper function, which exports an object of objects based on input */
+  const { transport, passwordResetOptions } = mailHelper(email, url);
+  
+  transport.sendMail(passwordResetOptions, (error, info) => {
 
     if (error) {
       console.log('error', error);
@@ -62,6 +98,28 @@ emailController.decryptUsername = (req, res, next) => {
   console.log('decrypted username: ', decryptedUsername);
 
   res.locals.username = decryptedUsername;
+
+  return next();
+};
+
+// =================================== //
+
+/**
+ * - get email from req.body
+ * - send email with a link to a protected resetPassword route
+ */
+
+emailController.decryptEmail = (req, res, next) => {
+  console.log('inside decryptEmail');
+
+  const { email } = req.query;
+
+  const decoded = decodeURIComponent(email);
+  const decryptedEmail = decrypt(decoded);
+
+  console.log('decrypted email: ', decryptedEmail);
+
+  res.locals.email = decryptedEmail;
 
   return next();
 };

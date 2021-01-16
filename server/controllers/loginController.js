@@ -16,7 +16,7 @@ const loginController = {};
 
 loginController.verifyUserAndStoreUserId = (req, res, next) => {
   console.log('inside verifyUserAndStoreUserId');
-  
+
   const { emailOrUsername } = req.body;
 
   const entryType = (emailOrUsername.includes('@')) ? 'email' : 'username';
@@ -115,6 +115,66 @@ loginController.returnUserData = (req, res, next) => {
 
     if (err) {
       console.log('error in returnUserData', err);
+      return next(err);
+    };
+  });
+};
+
+// =================================== //
+
+/**
+ * Attempts to get the user_id 
+ * - if it returns nothing, it doesn't exist
+ *   - because we dont want someone to be able to figure out whose email is valid and whose isn't, we send back a message saying we sent the email even if we didn't
+ * - if it returns a user_id, we proceed to next middleware
+ */
+
+loginController.ifEmailNoExistDontSend = (req, res, next) => {
+  console.log('inside ifEmailNoExistDontSend');
+  
+  const { email } = req.body;
+
+  db.query(users.getUserIdByEmail, [email], (err, result) => {
+
+    if (result) {
+
+      if (result[0] === undefined) {
+        /* if we go in here, it means the user doesn't exist */
+        console.log(`did not find email in db`, err);
+        return res.status(200).send({ message : `An email was sent to ${email}. Didn't receive email? Make sure address is correct.`});
+      };
+
+      console.log('found email in db', result[0].user_id);
+      return next();
+    };
+
+    if (err) {
+      console.log('error in ifEmailNoExistDontSend', err);
+      return next(err);
+    };
+  });
+};
+
+// =================================== //
+
+loginController.updatePassword = (req, res, next) => {
+  console.log('inside updatePassword');
+
+  const { hashedPassword, user_id } = res.locals;
+
+  db.query(users.updatePassword, [hashedPassword, user_id], (err, result) => {
+
+    if (result) {
+      if (result.affectedRows > 0) {
+        console.log('updated password successfully', result);
+        return next();
+      };
+      console.log('when updating password, did not effect any rows');
+      return next({message: 'when updating password, did not effect any rows'});
+    };
+
+    if (err) {
+      console.log('error in updatePassword', err);
       return next(err);
     };
   });

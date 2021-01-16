@@ -4,21 +4,18 @@ import axios from 'axios';
 
 function SignUp(props) {
 
-  const { notify, redirect, xout } = props;
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  const { notify, redirect, email, xout, login } = props;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   function validateForm() {
-    return email.length > 0 && password.length > 0;
+    return password.length > 0 && confirmPassword.length > 0;
   };
 
   function handleSubmit(event) {
 
     const payload = {
-      email,
-      username,
+      emailOrUsername: email,
       password,
       confirmPassword
     };
@@ -27,16 +24,18 @@ function SignUp(props) {
 
     /* NOTE: The /signup POST request will send the user a verification email, so it won't return anything back except a message */
     
-    axios.post('/signup', payload)
+    axios.post('/login/changePasswordAndLogin', payload)
       .then(res => {
-        /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
-        notify(res.data.message);
-        if (res.status === 200) {
-          redirect('/blank');
+        /* when something about the input is wrong, server sends 202 with message */
+        if (res.status === 202) {
+          notify(res.data.message);
+        } else if (res.status === 200) {
+          console.log('logged user in successfully', res.data);
+          login(res.data); // log user in & send user data
         };
       })
       .catch(err => {
-        console.log('err', err.response);
+        console.log('something broke - did not log user in after changing password', err.response);
       })
 
     event.preventDefault(); /* prevents it from refreshing */
@@ -48,29 +47,10 @@ function SignUp(props) {
       
       <Form onSubmit={handleSubmit}>
 
-        <Form.Group size="lg" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            autoFocus
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} /* so it actually updates visually when you type */
-          />
-        </Form.Group>
-
-        <Form.Group size="lg" controlId="username">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            autoFocus
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Form.Group>
-
         <Form.Group size="lg" controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
+            autoFocus
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -87,12 +67,11 @@ function SignUp(props) {
         </Form.Group>
 
         <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Create Account
+          Reset Password
         </Button>
         
       </Form>
 
-      <button onClick={() => redirect('/login')}>Log In</button>
     </>
   );
 };
