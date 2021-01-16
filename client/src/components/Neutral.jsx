@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
 
-function Neutral() {
+function Neutral(props) {
+  const { redirect } = props;
 
   return (
     <>
       <div>Log in or sign up</div>
-      <div><Link to="/login">Log In</Link></div>
-      <div><Link to="/signup">Sign Up</Link></div>
+      <button onClick={() => redirect('/login')}>Log In</button>
+      <button onClick={() => redirect('/signup')}>Sign Up</button>
     </>
   );
 }

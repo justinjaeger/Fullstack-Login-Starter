@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function SignUp(props) {
 
-  const { notify } = props;
+  const { notify, redirect } = props;
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -32,6 +31,9 @@ function SignUp(props) {
       .then(res => {
         /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
         notify(res.data.message);
+        if (res.status === 200) {
+          redirect('/');
+        };
       })
       .catch(err => {
         console.log('err', err.response);
@@ -42,7 +44,7 @@ function SignUp(props) {
 
   return (
     <>
-      <button><Link to="/">X</Link></button>
+      <button onClick={() => redirect('/')}>X</button>
       
       <Form onSubmit={handleSubmit}>
 
@@ -90,7 +92,7 @@ function SignUp(props) {
         
       </Form>
 
-      <div><Link to="/login">Log In</Link></div>
+      <button onClick={() => redirect('/login')}>Log In</button>
     </>
   );
 };

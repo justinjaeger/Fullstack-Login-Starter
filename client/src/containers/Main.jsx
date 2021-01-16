@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Switch, Redirect, Route } from 'react-router-dom';
 import axios from 'axios';
 
 import Login from '../components/Login';
@@ -12,7 +11,7 @@ const Main = () => {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
-  const [route, setRoute] = useState("/"); // home, login, signup - 
+  const [route, setRoute] = useState("/");
   const [message, setMessage] = useState(false);
 
   useEffect(() => {
@@ -59,6 +58,7 @@ const Main = () => {
     setMessage("");
     setUsername(userData.username);
     setLoggedIn(true);
+    setRoute('/');
   };
 
   // LOG USER OUT
@@ -80,47 +80,46 @@ const Main = () => {
     setMessage(entry);
   };
 
+  // REDIRECT
+  function redirect(entry) {
+    setRoute(entry);
+  };
+
   // =============================== //
   
   return (
     <>
       { message && <div>{message}</div>}
 
-      { loggedIn===false
-      ?
-        [
-        <Redirect to={route}/>,
-        <Switch>
-          <Route exact path="/">
-            <Neutral />
-          </Route>
-          <Route exact path="/login">
-            <Login 
-              username={username}
-              login={login}
-              notify={notify}
-            />
-          </Route>
-          <Route exact path="/signup">
-            <SignUp 
-              notify={notify}
-            />
-          </Route>
-        </Switch>
-        ]
-
-      :
-        [ 
-          <Redirect to="dashboard"/>,
-
-          <Route exact path="/dashboard">
-            <Dashboard 
-              username={username}
-              logout={logout}
-            />
-          </Route>
-        ]
+      { (loggedIn===false && route === '/') &&
+        <Neutral
+          redirect={redirect}
+        />
       }
+
+      { (loggedIn===false && route === '/login') &&
+        <Login 
+          redirect={redirect}
+          username={username}
+          login={login}
+          notify={notify}
+        />
+      }
+
+      { (loggedIn===false && route === '/signup') &&
+        <SignUp 
+          redirect={redirect}
+          notify={notify}
+        />
+      }
+
+      { (loggedIn===true && route === '/') &&
+        <Dashboard 
+          username={username}
+          logout={logout}
+        />
+      }
+
     </>
   );  
 };

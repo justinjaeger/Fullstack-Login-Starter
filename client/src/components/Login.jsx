@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function Login(props) {
 
-  const { login, notify, username } = props;
+  const { login, notify, username, redirect } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -31,7 +30,8 @@ function Login(props) {
         /* when something about the input is wrong, server sends 202 with message */
         if (res.status === 202) {
           notify(res.data.message);
-        } else {
+          
+        } else if (res.status === 200) {
           console.log('logged user in successfully');
           login(res.data); // log user in & send user data
         };
@@ -45,7 +45,7 @@ function Login(props) {
 
   return (
     <>
-      <button><Link to="/">X</Link></button>
+      <button onClick={() => redirect('/')}>X</button>
 
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="emailOrUsername">
@@ -71,7 +71,7 @@ function Login(props) {
         </Button>
       </Form>
 
-      <div><Link to="/signup">Sign Up</Link></div>
+      <button onClick={() => redirect('/signup')}>Sign Up</button>
     </>
   );
 }
