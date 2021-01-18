@@ -4,11 +4,12 @@ import axios from 'axios';
 
 function ForgotPassword(props) {
 
-  const { notify, redirect, xout } = props;
+  const { setMessage, setRoute, showXButton } = props;
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+
+  useEffect(() => {
+    showXButton(true);
+  });
 
   function validateForm() {
     return email.length > 0;
@@ -24,9 +25,9 @@ function ForgotPassword(props) {
       .then(res => {
         console.log('got a response in forgotPassword')
         /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
-        notify(res.data.message);
+        setMessage(res.data.message);
         if (res.status === 200) {
-          redirect('/blank');
+          setRoute('/blank');
         };
       })
       .catch(err => {
@@ -38,7 +39,6 @@ function ForgotPassword(props) {
 
   return (
     <>
-      <button onClick={() => xout()}>X</button>
 
       <div>Enter your email to reset your password</div>
       

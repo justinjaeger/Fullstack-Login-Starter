@@ -21,11 +21,13 @@ router.post('/',
   signupController.createUser,
   emailController.sendVerificationEmail,
   (req, res) => {
-    return res.status(200).send({ message: `Please verify the email sent to ${req.body.email} to complete log in.` });
+    return res.status(200).send({ 
+      message: `Please verify the email sent to ${req.body.email}.`,
+    });
 });
 
 // RESEND VERIFICATION EMAIL
-router.post('/resend-verification', // ?username={username}
+router.post('/resend-verification',
   emailController.sendVerificationEmail,
   (req, res) => {
     return res.status(200).send({ message: `Please verify the email sent to ${req.body.email} to complete log in.` });
