@@ -31,6 +31,12 @@ queries.getUserIdByEmail = `
   WHERE email=?
 `;
 
+queries.getEmailByUserId = `
+  SELECT user_id 
+  FROM users
+  WHERE email=?
+`;
+
 queries.getUserById = `
   SELECT * FROM users
   WHERE user_id=?
@@ -38,6 +44,12 @@ queries.getUserById = `
 
 queries.getPasswordById = `
   SELECT password FROM users
+  WHERE user_id=?
+`;
+
+queries.updatePassword = `
+  UPDATE users
+  SET password=?
   WHERE user_id=?
 `;
 
@@ -51,6 +63,12 @@ queries.authenticateUser = `
   UPDATE users
   SET authenticated=1
   WHERE username=?
+`;
+
+queries.verifyAuthentication = `
+  SELECT authenticated, email, username
+  FROM users
+  WHERE user_id=?
 `;
 
 queries.makeAdmin = `

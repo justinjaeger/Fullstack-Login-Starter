@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function Login(props) {
 
-  const { login, notify, username } = props;
+  const { login, notify, username, redirect, xout, display } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -31,13 +30,17 @@ function Login(props) {
         /* when something about the input is wrong, server sends 202 with message */
         if (res.status === 202) {
           notify(res.data.message);
-        } else {
+          if (res.data.email) {
+            display(res.data.email, res.data.username);
+            redirect('/blank');
+          };
+        } else if (res.status === 200) {
           console.log('logged user in successfully');
           login(res.data); // log user in & send user data
         };
       })
       .catch(err => {
-        console.log('something broke - did not log user in', err.response);
+        console.log('something broke trying to log user in', err.response);
       })
 
     event.preventDefault(); /** prevents it from refreshing */
@@ -45,7 +48,7 @@ function Login(props) {
 
   return (
     <>
-      <button><Link to="/">X</Link></button>
+      <button onClick={() => xout()}>X</button>
 
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="emailOrUsername">
@@ -66,12 +69,14 @@ function Login(props) {
           />
         </Form.Group>
 
+        <div><button onClick={() => redirect('/forgotPassword')}>Forgot your password?</button></div>
+
         <Button block size="lg" type="submit" disabled={!validateForm()}>
           Login
         </Button>
       </Form>
 
-      <div><Link to="/signup">Sign Up</Link></div>
+      <button onClick={() => redirect('/signup')}>Sign Up</button>
     </>
   );
 }

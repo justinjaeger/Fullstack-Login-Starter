@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
-function SignUp(props) {
+function ForgotPassword(props) {
 
   const { notify, redirect, xout } = props;
   const [email, setEmail] = useState("");
@@ -11,24 +11,18 @@ function SignUp(props) {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   function validateForm() {
-    return email.length > 0 && password.length > 0;
+    return email.length > 0;
   };
 
   function handleSubmit(event) {
 
-    const payload = {
-      email,
-      username,
-      password,
-      confirmPassword
-    };
-
-    console.log('submitted', payload);
+    const payload = { email };
 
     /* NOTE: The /signup POST request will send the user a verification email, so it won't return anything back except a message */
     
-    axios.post('/signup', payload)
+    axios.post('/login/forgotPassword', payload)
       .then(res => {
+        console.log('got a response in forgotPassword')
         /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
         notify(res.data.message);
         if (res.status === 200) {
@@ -45,6 +39,8 @@ function SignUp(props) {
   return (
     <>
       <button onClick={() => xout()}>X</button>
+
+      <div>Enter your email to reset your password</div>
       
       <Form onSubmit={handleSubmit}>
 
@@ -58,43 +54,14 @@ function SignUp(props) {
           />
         </Form.Group>
 
-        <Form.Group size="lg" controlId="username">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            autoFocus
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group size="lg" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Form.Group>
-
         <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Create Account
+          Submit
         </Button>
         
       </Form>
 
-      <button onClick={() => redirect('/login')}>Log In</button>
     </>
   );
 };
 
-export default SignUp;
+export default ForgotPassword;

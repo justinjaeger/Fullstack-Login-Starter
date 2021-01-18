@@ -16,7 +16,7 @@ const loginController = {};
 
 loginController.verifyUserAndStoreUserId = (req, res, next) => {
   console.log('inside verifyUserAndStoreUserId');
-  
+
   const { emailOrUsername } = req.body;
 
   const entryType = (emailOrUsername.includes('@')) ? 'email' : 'username';
@@ -93,6 +93,48 @@ loginController.verifyPassword = (req, res, next) => {
 // =================================== //
 
 /**
+ * - checks if authenticated=1 in the db
+ * - if yes, proceed
+ * - if not, send a message back to the client that they need to authenticate first, with the option to re-send the email
+ */
+
+loginController.verifyEmailAuthenticated = (req, res, next) => {
+  console.log('inside verifyEmailAuthenticated');
+  const { user_id } = res.locals;
+
+  db.query(users.verifyAuthentication, [user_id], (err, result) => {
+
+    if (result) {
+
+      const status = result[0].authenticated[0];      
+
+      if (status === 1) {
+        return next();
+      };
+
+      if (status === 0) {
+        // get the email and username
+        const email = result[0].email;
+        const username = result[0].username;
+        return res.status(202).send({ 
+          message: `Please verify the email sent to ${email}.`,
+          email: email,
+          username: username,
+        });
+      };
+      
+    };
+
+    if (err) {
+      console.log('error in verifyEmailAuthenticated', err);
+      return next(err);
+    };
+  });
+};
+
+// =================================== //
+
+/**
  * Returns all the user's data except the password
  * - assumes user_id is in res.locals.user_id
  * - uses user_id to fetch all user info from db
@@ -115,6 +157,66 @@ loginController.returnUserData = (req, res, next) => {
 
     if (err) {
       console.log('error in returnUserData', err);
+      return next(err);
+    };
+  });
+};
+
+// =================================== //
+
+/**
+ * Attempts to get the user_id 
+ * - if it returns nothing, it doesn't exist
+ *   - because we dont want someone to be able to figure out whose email is valid and whose isn't, we send back a message saying we sent the email even if we didn't
+ * - if it returns a user_id, we proceed to next middleware
+ */
+
+loginController.ifEmailNoExistDontSend = (req, res, next) => {
+  console.log('inside ifEmailNoExistDontSend');
+  
+  const { email } = req.body;
+
+  db.query(users.getUserIdByEmail, [email], (err, result) => {
+
+    if (result) {
+
+      if (result[0] === undefined) {
+        /* if we go in here, it means the user doesn't exist */
+        console.log(`did not find email in db`, err);
+        return res.status(200).send({ message : `An email was sent to ${email}. Didn't receive email? Make sure address is correct.`});
+      };
+
+      console.log('found email in db', result[0].user_id);
+      return next();
+    };
+
+    if (err) {
+      console.log('error in ifEmailNoExistDontSend', err);
+      return next(err);
+    };
+  });
+};
+
+// =================================== //
+
+loginController.updatePassword = (req, res, next) => {
+  console.log('inside updatePassword');
+
+  const { hashedPassword, user_id } = res.locals;
+
+  db.query(users.updatePassword, [hashedPassword, user_id], (err, result) => {
+
+    if (result) {
+      if (result.affectedRows > 0) {
+        console.log('updated password successfully', result);
+        return next();
+      };
+      console.log('when updating password, did not effect any rows');
+      return next({message: 'when updating password, did not effect any rows'});
+    };
+
+    if (err) {
+      console.log('error in updatePassword', err);
       return next(err);
     };
   });

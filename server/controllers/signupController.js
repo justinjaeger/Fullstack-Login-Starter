@@ -3,7 +3,6 @@ const users = require('../queries/userQueries');
 const profanityFilter = require('../misc/profanityFilter');
 const usernameFilter = require('../misc/usernameFilter');
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
 
 const signupController = {};
 
