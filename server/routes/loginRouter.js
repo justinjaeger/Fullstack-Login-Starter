@@ -10,6 +10,7 @@ const signupController = require('../controllers/signupController');
 router.post('/',
   loginController.verifyUserAndStoreUserId,
   loginController.verifyPassword,
+  loginController.verifyEmailAuthenticated,
   tokenController.createAccessToken,
   loginController.returnUserData,
   (req, res) => {

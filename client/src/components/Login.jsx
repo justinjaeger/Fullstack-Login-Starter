@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function Login(props) {
 
-  const { login, notify, username, redirect, xout } = props;
+  const { login, notify, username, redirect, xout, display } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -30,14 +30,17 @@ function Login(props) {
         /* when something about the input is wrong, server sends 202 with message */
         if (res.status === 202) {
           notify(res.data.message);
-
+          if (res.data.email) {
+            display(res.data.email, res.data.username);
+            redirect('/blank');
+          };
         } else if (res.status === 200) {
           console.log('logged user in successfully');
           login(res.data); // log user in & send user data
         };
       })
       .catch(err => {
-        console.log('something broke - did not log user in', err.response);
+        console.log('something broke trying to log user in', err.response);
       })
 
     event.preventDefault(); /** prevents it from refreshing */

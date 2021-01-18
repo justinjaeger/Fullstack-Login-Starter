@@ -6,12 +6,12 @@ const tokenController = require('../controllers/tokenController');
 const emailController = require('../controllers/emailController');
 
 // TEST: emailer
-router.post('/email',
-  // send email with link
-  emailController.sendVerificationEmail,
-  (req, res) => {
-    return res.status(202).send({ message: `Email sent to ${req.body.email}` });
-});
+// router.post('/email',
+//   // send email with link
+//   emailController.sendVerificationEmail,
+//   (req, res) => {
+//     return res.status(202).send({ message: `Email sent to ${req.body.email}` });
+// });
 
 // Sign up a user
 router.post('/',
@@ -24,6 +24,14 @@ router.post('/',
     return res.status(200).send({ message: `Please verify the email sent to ${req.body.email} to complete log in.` });
 });
 
+// RESEND VERIFICATION EMAIL
+router.post('/resend-verification', // ?username={username}
+  emailController.sendVerificationEmail,
+  (req, res) => {
+    return res.status(200).send({ message: `Please verify the email sent to ${req.body.email} to complete log in.` });
+});
+
+// Fires when you click the verification link sent to your email
 router.get('/verify-email', // ?username={username}
   emailController.decryptUsername,
   signupController.authenticateUser,

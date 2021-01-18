@@ -16,10 +16,10 @@ const LoginContainer = () => {
   const [email, setEmail] = useState("");
   const [route, setRoute] = useState("/");
   const [message, setMessage] = useState(false);
+  const [resendEmailLink, displayResendEmailLink] = useState(false);
 
   useEffect(() => {
     console.log('useEffect firing');
-
     /**
      * Checks if user is logged in
      * If user is logged in, it finds the user_id to populate the page with
@@ -40,15 +40,6 @@ const LoginContainer = () => {
 
     /* Authenticated cookie exists affter we click the verification link in our email */
     if (document.cookie.includes('authenticated')) {
-      /** 
-       * This does 3 things:
-       * 1. Route user to /login
-       *    - this setRoute() works since it's a new page we got linked to, but would not work normally
-       *    - it also kind of locks you into this page, since it redirects you to login every refresh. not great
-       * 2. The cookie stores the username, so we make that the input for them
-       * 3. And we send the message that tells them to enter password
-       * Overall, this is quite a bad solution but I'll fix it later
-       */
       const un = decodeURIComponent(document.cookie.split('XXX')[1]);
       setRoute("/login");
       setUsername(un);
@@ -93,6 +84,27 @@ const LoginContainer = () => {
     setMessage(entry);
   };
 
+  // DISPLAY EMAIL RESEND LINK
+  function display(em, un) {
+    console.log('showing email resend link')
+    displayResendEmailLink({ em, un });
+  };
+
+  // SEND VERIFICATION EMAIL
+  function sendVerificationEmail(em, un) {
+    const payload = { email: em, username: un };
+    axios.post('/signup/resend-verification', payload)
+    .then(res => {
+      console.log('resent verification email successfully');
+      setRoute('/blank');
+      setMessage(res.data.message);
+      displayResendEmailLink(false);
+    })
+    .catch(err => {
+      console.log('err, could not resend verification email', err.response);
+    })
+  };
+
   // REDIRECT
   function redirect(entry) {
     console.log('redirecting', entry)
@@ -103,6 +115,7 @@ const LoginContainer = () => {
   function xout() {
     setMessage(false);
     setRoute('/');
+    displayResendEmailLink(false)
   };
 
   // =============================== //
@@ -110,6 +123,7 @@ const LoginContainer = () => {
   return (
     <>
       { message && <div>{message}</div>}
+      { resendEmailLink && <div><button onClick={() => {sendVerificationEmail(resendEmailLink.em, resendEmailLink.un)}} >Click here</button> to resend email</div> }
 
       { (loggedIn===false && route === '/') &&
         <Neutral
@@ -123,6 +137,7 @@ const LoginContainer = () => {
           username={username}
           login={login}
           notify={notify}
+          display={display}
           xout={xout}
         />
       }

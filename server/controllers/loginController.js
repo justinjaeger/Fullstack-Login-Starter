@@ -93,6 +93,48 @@ loginController.verifyPassword = (req, res, next) => {
 // =================================== //
 
 /**
+ * - checks if authenticated=1 in the db
+ * - if yes, proceed
+ * - if not, send a message back to the client that they need to authenticate first, with the option to re-send the email
+ */
+
+loginController.verifyEmailAuthenticated = (req, res, next) => {
+  console.log('inside verifyEmailAuthenticated');
+  const { user_id } = res.locals;
+
+  db.query(users.verifyAuthentication, [user_id], (err, result) => {
+
+    if (result) {
+
+      const status = result[0].authenticated[0];      
+
+      if (status === 1) {
+        return next();
+      };
+
+      if (status === 0) {
+        // get the email and username
+        const email = result[0].email;
+        const username = result[0].username;
+        return res.status(202).send({ 
+          message: `Please verify the email sent to ${email}.`,
+          email: email,
+          username: username,
+        });
+      };
+      
+    };
+
+    if (err) {
+      console.log('error in verifyEmailAuthenticated', err);
+      return next(err);
+    };
+  });
+};
+
+// =================================== //
+
+/**
  * Returns all the user's data except the password
  * - assumes user_id is in res.locals.user_id
  * - uses user_id to fetch all user info from db
