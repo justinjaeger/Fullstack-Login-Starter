@@ -2,12 +2,13 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import Login from '../components/Login';
-import SignUp from '../components/SignUp';
-import Neutral from '../components/Neutral';
-import Dashboard from '../components/Dashboard';
-import ForgotPassword from '../components/ForgotPassword';
-import ResetPassword from '../components/ResetPassword';
+import Login from '../components/loginComponents/Login';
+import SignUp from '../components/loginComponents/SignUp';
+import Main from '../components/loginComponents/Main';
+import Dashboard from '../components/loginComponents/Dashboard';
+import ForgotPassword from '../components/loginComponents/ForgotPassword';
+import ResetPassword from '../components/loginComponents/ResetPassword';
+import Blank from '../components/loginComponents/Blank';
 
 const LoginContainer = () => {
 
@@ -16,6 +17,7 @@ const LoginContainer = () => {
   const [email, setEmail] = useState("");
   const [route, setRoute] = useState("/");
   const [message, setMessage] = useState(false);
+  const [xButton, showXButton] = useState(false);
   const [resendEmailLink, displayResendEmailLink] = useState(false);
 
   useEffect(() => {
@@ -38,19 +40,20 @@ const LoginContainer = () => {
         console.log('err, could not validate', err.response);
       })
 
-    /* Authenticated cookie exists affter we click the verification link in our email */
+    /* authenticated cookie exists affter we click the verification link in our email */
     if (document.cookie.includes('authenticated')) {
-      const un = decodeURIComponent(document.cookie.split('XXX')[1]);
+      const username = decodeURIComponent(document.cookie.split('XXX')[1]);
       setRoute("/login");
-      setUsername(un);
+      setUsername(username);
       setMessage("Email verified. Please enter your password");
     };
 
+    /* reset_password cookie exists after we click the reset password link in our email */
     if (document.cookie.includes('reset_password')) {
-      const em = decodeURIComponent(document.cookie.split('XXX')[1]);
+      const email = decodeURIComponent(document.cookie.split('XXX')[1]);
       setRoute("/resetPassword");
-      setEmail(em);
-      setMessage(`Please enter a new password for ${em}`);
+      setEmail(email);
+      setMessage(`Please enter a new password for ${email}`);
     };
 
   }, [loggedIn]);
@@ -78,21 +81,9 @@ const LoginContainer = () => {
     })
   };
 
-  // SET MESSAGE
-  function notify(entry) {
-    console.log('setting message:', entry)
-    setMessage(entry);
-  };
-
-  // DISPLAY EMAIL RESEND LINK
-  function display(em, un) {
-    console.log('showing email resend link')
-    displayResendEmailLink({ em, un });
-  };
-
-  // SEND VERIFICATION EMAIL
-  function sendVerificationEmail(em, un) {
-    const payload = { email: em, username: un };
+  // RESEND VERIFICATION EMAIL
+  function sendVerificationEmail(email, username) {
+    const payload = { email, username };
     axios.post('/signup/resend-verification', payload)
     .then(res => {
       console.log('resent verification email successfully');
@@ -105,77 +96,78 @@ const LoginContainer = () => {
     })
   };
 
-  // REDIRECT
-  function redirect(entry) {
-    console.log('redirecting', entry)
-    setRoute(entry);
-  };
-
   // X OUT
-  function xout() {
+  function xOut() {
     setMessage(false);
     setRoute('/');
-    displayResendEmailLink(false)
+    displayResendEmailLink(false);
+    showXButton(false);
   };
 
   // =============================== //
   
   return (
     <>
+      { xButton && <button onClick={() => xOut()}>X</button> }
       { message && <div>{message}</div>}
-      { resendEmailLink && <div><button onClick={() => {sendVerificationEmail(resendEmailLink.em, resendEmailLink.un)}} >Click here</button> to resend email</div> }
+      { resendEmailLink && <div><button onClick={() => {sendVerificationEmail(resendEmailLink.email, resendEmailLink.username)}} >Click here</button> to resend email</div> }
 
       { (loggedIn===false && route === '/') &&
-        <Neutral
-          redirect={redirect}
+        <Main
+          setRoute={setRoute}
+          showXButton={showXButton}
         />
       }
 
       { (loggedIn===false && route === '/login') &&
         <Login 
-          redirect={redirect}
+          setRoute={setRoute}
           username={username}
           login={login}
-          notify={notify}
-          display={display}
-          xout={xout}
+          setMessage={setMessage}
+          displayResendEmailLink={displayResendEmailLink}
+          showXButton={showXButton}
         />
       }
 
       { (loggedIn===false && route === '/signup') &&
         <SignUp 
-          redirect={redirect}
-          notify={notify}
-          xout={xout}
+          setRoute={setRoute}
+          setMessage={setMessage}
+          showXButton={showXButton}
+          displayResendEmailLink={displayResendEmailLink}
         />
       }
 
       { (loggedIn===false && route === '/forgotPassword') &&
         <ForgotPassword 
-          redirect={redirect}
-          notify={notify}
-          xout={xout}
+          setRoute={setRoute}
+          setMessage={setMessage}
+          showXButton={showXButton}
         />
       }
 
       { (loggedIn===false && route === '/resetPassword') &&
         <ResetPassword 
           email={email}
-          redirect={redirect}
-          notify={notify}
-          xout={xout}
+          setRoute={setRoute}
+          setMessage={setMessage}
           login={login}
+          showXButton={showXButton}
         />
       }
 
       { (loggedIn===false && route === '/blank') && 
-        <button onClick={() => xout()}>X</button>
+        <Blank 
+          showXButton={showXButton}
+        />
       }
 
       { (loggedIn===true && route === '/') &&
         <Dashboard 
           username={username}
           logout={logout}
+          showXButton={showXButton}
         />
       }
 

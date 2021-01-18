@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react';
 
 function Dashboard(props) { 
-  const { username, logout } = props;
+  const { username, logout, showXButton } = props;
+
+  useEffect(() => {
+    showXButton(false);
+  });
 
   return (
     <>
