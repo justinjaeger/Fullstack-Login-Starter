@@ -3,10 +3,11 @@
 * {
   margin: 0;
   padding: 0;
+  border: none;
   box-sizing: border-box;
-  background: $off-white;
   font-family: $source-sans;
-  color: #FFF;
+  color: $off-white;
+  background: none;
   button:focus {
     outline: $secondary;
   }
@@ -17,6 +18,10 @@
   button:hover {
     cursor: pointer;
   }
+}
+
+body {
+  background: $off-white;
 }
 
 #App {}

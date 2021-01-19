@@ -7,8 +7,8 @@ import LoginContainer from './containers/LoginContainer';
 function App() { 
 
   const [loggedIn, setLoggedIn] = useState(false);
-  const [loginDropdown, showLoginDropdown] = useState(false);
-  const [loginRoute, setLoginRoute] = useState('/');
+  const [loginDropdown, showLoginDropdown] = useState(true);
+  const [loginRoute, setLoginRoute] = useState('/login');
   const [loginMessage, setLoginMessage] = useState('');
   const [loginError, setLoginError] = useState('');
   const [username, setUsername] = useState('');
@@ -86,7 +86,7 @@ function App() {
   };
 
   return (
-    <>
+    <div id="App">
       <Header
         loggedIn={loggedIn}
         logout={logout}
@@ -107,7 +107,7 @@ function App() {
           login={login}
         />
       }
-    </>
+    </div>
   );
 } 
  

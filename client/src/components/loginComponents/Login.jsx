@@ -66,10 +66,10 @@ function Login(props) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />  
-
-        <button onClick={() => setRoute('/forgotPassword')} className="forgot-password-button">Forgot your password?</button>
-
+        
         <button disabled={!validateForm()} className="submit-button" >Submit</button>
+        
+        <button onClick={() => setRoute('/forgotPassword')} className="forgot-password-button">Forgot your password?</button>
       
       </form>
     </>

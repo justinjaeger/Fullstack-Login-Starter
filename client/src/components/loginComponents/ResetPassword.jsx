@@ -63,7 +63,7 @@ function SignUp(props) {
         />
 
         <button disabled={!validateForm()} className="submit-button" >Reset Password</button>
-        
+      
       </form>
     </>
   );

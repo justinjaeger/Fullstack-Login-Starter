@@ -46,7 +46,6 @@ const LoginContainer = (props) => {
 
       { message && <div className="login-message">{message}</div>}
 
-      <div id="login-form-container">
       { (route === '/login') &&
         <Login 
           setRoute={setRoute}
@@ -89,7 +88,6 @@ const LoginContainer = (props) => {
         <Blank 
         />
       }
-      </div>
 
       { error && <div className="error-message">{error}</div>}
       

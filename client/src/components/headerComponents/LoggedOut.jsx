@@ -11,8 +11,8 @@ function LoggedOut(props) {
 
   return (
     <>
-      <button onClick={() => handleClick('/login')} className="primary-button" >Log In</button>
-      <button onClick={() => handleClick('/signup')} className="primary-button">Sign Up</button>
+      <button onClick={() => handleClick('/login')} className="header-button" >Log In</button>
+      <button onClick={() => handleClick('/signup')} className="header-button">Sign Up</button>
     </>
   );
 }

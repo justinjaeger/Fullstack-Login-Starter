@@ -46,10 +46,10 @@ function ForgotPassword(props) {
           type="text"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        /> 
+        />
 
         <button disabled={!validateForm()} className="submit-button">Submit</button>
-        
+      
       </form>
     </>
   );

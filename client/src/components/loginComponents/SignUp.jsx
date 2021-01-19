@@ -81,9 +81,8 @@ function SignUp(props) {
         />
 
         <button disabled={!validateForm()} className="submit-button">Create Account</button>
-        
-      </form>
 
+      </form> 
     </>
   );
 };
