@@ -10,7 +10,7 @@ function Dashboard(props) {
   return (
     <>
       <div>Welcome, {username}</div>
-      <button onClick={logout} >Log Out</button>
+      <button onClick={logout} className="primary-button" >Log Out</button>
     </>
   );
 }

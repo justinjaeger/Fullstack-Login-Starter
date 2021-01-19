@@ -39,27 +39,22 @@ function ForgotPassword(props) {
 
   return (
     <>
-
       <div>Enter your email to reset your password</div>
       
-      <Form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
 
-        <Form.Group size="lg" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            autoFocus
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} /* so it actually updates visually when you type */
-          />
-        </Form.Group>
+        <div className="login-form-label">Email</div>
+        <input
+          className="login-form-input"
+          autoFocus
+          type="email"
+          value={email}
+          onChange={(e) => setPassword(e.target.value)}
+        /> 
 
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Submit
-        </Button>
+        <button disabled={!validateForm()} className="submit-button">Submit</button>
         
-      </Form>
-
+      </form>
     </>
   );
 };

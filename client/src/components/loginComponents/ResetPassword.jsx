@@ -47,34 +47,29 @@ function SignUp(props) {
 
   return (
     <>
-      
-      <Form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
 
-        <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            autoFocus
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
+        <div className="login-form-label">Password</div>
+        <input
+          className="login-form-input"
+          autoFocus
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-        <Form.Group size="lg" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Form.Group>
+        <div className="login-form-label">Confirm Password</div>
+        <input
+          className="login-form-input"
+          autoFocus
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
 
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Reset Password
-        </Button>
+        <button disabled={!validateForm()} className="submit-button" >Reset Password</button>
         
-      </Form>
-
+      </form>
     </>
   );
 };

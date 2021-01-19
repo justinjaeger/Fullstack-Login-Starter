@@ -30,7 +30,6 @@ function SignUp(props) {
     console.log('submitted', payload);
 
     /* NOTE: The /signup POST request will send the user a verification email, so it won't return anything back except a message */
-    
     axios.post('/signup', payload)
       .then(res => {
         /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
@@ -49,54 +48,46 @@ function SignUp(props) {
 
   return (
     <>
-      
-      <Form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
 
-        <Form.Group size="lg" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            autoFocus
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} /* so it actually updates visually when you type */
-          />
-        </Form.Group>
+        <div className=".login-form-label">Email</div>
+        <input
+          className="login-form-input"
+          autoFocus
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)} /* so it actually updates visually when you type */
+        />
 
-        <Form.Group size="lg" controlId="username">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            autoFocus
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Form.Group>
+        <div className=".login-form-label">Username</div>          
+        <input
+          className="login-form-input"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
 
-        <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
+        <div className=".login-form-label">Password</div>          
+        <input
+          className="login-form-input"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-        <Form.Group size="lg" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Form.Group>
+        <div className=".login-form-label">Confirm Password</div>          
+        <input
+          className="login-form-input"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
 
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Create Account
-        </Button>
+        <button disabled={!validateForm()} className="submit-button">Create Account</button>
         
-      </Form>
+      </form>
 
-      <button onClick={() => setRoute('/login')}>Log In</button>
+      <button onClick={() => setRoute('/login')} className="primary-button">Log In</button>
     </>
   );
 };

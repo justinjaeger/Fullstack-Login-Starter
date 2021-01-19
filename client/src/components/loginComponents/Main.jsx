@@ -6,8 +6,8 @@ function Main(props) {
   return (
     <>
       <div>Log in or sign up</div>
-      <button onClick={() => setRoute('/login')}>Log In</button>
-      <button onClick={() => setRoute('/signup')}>Sign Up</button>
+      <button onClick={() => setRoute('/login')} className="primary-button" >Log In</button>
+      <button onClick={() => setRoute('/signup')} className="primary-button">Sign Up</button>
     </>
   );
 }

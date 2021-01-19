@@ -15,7 +15,7 @@ const LoginContainer = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [route, setRoute] = useState("/");
+  const [route, setRoute] = useState("/signup");
   const [message, setMessage] = useState(false);
   const [xButton, showXButton] = useState(false);
   const [resendEmailLink, displayResendEmailLink] = useState(false);
@@ -107,10 +107,10 @@ const LoginContainer = () => {
   // =============================== //
   
   return (
-    <>
-      { xButton && <button onClick={() => xOut()}>X</button> }
-      { message && <div>{message}</div>}
-      { resendEmailLink && <div><button onClick={() => {sendVerificationEmail(resendEmailLink.email, resendEmailLink.username)}} >Click here</button> to resend email</div> }
+    <div id="login-container">
+      { xButton && <button onClick={() => xOut()} className="x-button">X</button> }
+      { message && <div className="login-message">{message}</div>}
+      { resendEmailLink && <div className="login-message"><button onClick={() => {sendVerificationEmail(resendEmailLink.email, resendEmailLink.username)}} className="submit-button" >Click here</button> to resend email</div> }
 
       { (loggedIn===false && route === '/') &&
         <Main
@@ -171,7 +171,7 @@ const LoginContainer = () => {
         />
       }
 
-    </>
+    </div>
   );  
 };
 

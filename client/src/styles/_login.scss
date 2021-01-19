@@ -1,0 +1,56 @@
+@import './variables';
+
+@mixin flexCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#login-container {
+  @include flexCenter();
+  background: #FFF;
+  border: 1px solid #e7e7e7;
+  box-shadow: 5px 5px 40px 5px #cecece;
+  border-radius: 5px;
+  margin: auto;
+  padding: 1%;
+  width: 90%;
+}
+
+.login-form {
+  color:brown !important;
+}
+.login-form-label {
+
+}
+.login-form-input {
+  
+}
+
+.login-message {
+  background: burlywood;
+  border: none;
+  border-radius: 0px;
+}
+
+// BUTTONS
+.primary-button {
+  background: burlywood;
+  border: none;
+  border-radius: 0px;
+}
+.secondary-button {
+  background: burlywood;
+  border: none;
+  border-radius: 0px;
+}
+.submit-button {
+  background: burlywood;
+  border: none;
+  border-radius: 0px;
+}
+.x-button {
+  background: burlywood;
+  border: none;
+  border-radius: 0px;
+}

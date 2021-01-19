@@ -49,35 +49,33 @@ function Login(props) {
 
   return (
     <>
-      {/* <button onClick={() => xout()}>X</button> */}
+      <form onSubmit={handleSubmit} className="login-form">
 
-      <Form onSubmit={handleSubmit}>
-        <Form.Group size="lg" controlId="emailOrUsername">
-          <Form.Label>Email or Username</Form.Label>
-          <Form.Control
-            autoFocus
-            type="text"
-            value={emailOrUsername}
-            onChange={(e) => setEmailOrUsername(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
+        <div className=".login-form-label">Email or Username</div>
+        <input
+          className="login-form-input"
+          autoFocus
+          type="text"
+          value={emailOrUsername}
+          onChange={(e) => setEmailOrUsername(e.target.value)}
+        />
 
-        <div><button onClick={() => setRoute('/forgotPassword')}>Forgot your password?</button></div>
+        <div className=".login-form-label">Password</div>
+        <input
+          className="login-form-input"
+          autoFocus
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />  
 
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Login
-        </Button>
-      </Form>
+        <button onClick={() => setRoute('/forgotPassword')} className="secondary-button">Forgot your password?</button>
 
-      <button onClick={() => setRoute('/signup')}>Sign Up</button>
+        <button disabled={!validateForm()} className="submit-button" >Login</button>
+      
+      </form>
+
+      <button onClick={() => setRoute('/signup')} className="primary-button">Sign Up</button>
     </>
   );
 }
