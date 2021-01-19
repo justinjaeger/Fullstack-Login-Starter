@@ -36,7 +36,7 @@ function Login(props) {
           };
         } else if (res.status === 200) {
           console.log('logged user in successfully');
-          login(res.data); // log user in & send user data
+          login(res.data); /* log user in & send user data */
         };
       })
       .catch(err => {

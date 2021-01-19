@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function SignUp(props) {
 
-  const { setMessage, setRoute, setError, email, login } = props;
+  const { setMessage, setError, email, login } = props;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
