@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function Login(props) {
 
-  const { login, setMessage, username, setRoute, displayResendEmailLink } = props;
+  const { login, setMessage, setError, username, setRoute, displayResendEmailLink } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -28,7 +28,8 @@ function Login(props) {
       .then(res => {
         /* when something about the input is wrong, server sends 202 with message */
         if (res.status === 202) {
-          setMessage(res.data.message);
+          if (res.data.message) setMessage(res.data.message);
+          if (res.data.error) setError(res.data.error);
           if (res.data.email) {
             displayResendEmailLink({ email: res.data.email, username: res.data.username });
             setRoute('/blank');
@@ -61,7 +62,6 @@ function Login(props) {
         <div className="login-form-label">Password</div>
         <input
           className="login-form-input"
-          autoFocus
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

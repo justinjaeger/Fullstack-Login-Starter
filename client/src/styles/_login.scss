@@ -66,8 +66,18 @@
   font-family: $oswald;
   &:hover {
     color:$secondary;
-    cursor: pointer;
   } 
+}
+
+.click-here-button {
+  position: relative;
+  font-size: 10px;
+  background: $off-black;
+  border: none;
+  text-decoration: underline;
+  &:hover {
+    color: $secondary;
+  }
 }
 
 .forgot-password-button {
@@ -79,7 +89,6 @@
   border: none;
   &:hover {
     color:$secondary;
-    cursor: pointer;
   } 
 }
 
@@ -96,7 +105,11 @@
   &:hover {
     background: $secondary;
     color: $off-black;
-    cursor: pointer;
+  };
+  &:disabled {
+    background: $gray;
+    color: $off-white;
+    cursor: auto;
   } 
 }
 
@@ -117,6 +130,5 @@
   &:hover {
     background: $secondary;
     color: $off-black;
-    cursor: pointer;
   } 
 }

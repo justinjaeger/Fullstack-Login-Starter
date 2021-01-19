@@ -10,16 +10,13 @@ function App() {
   const [loginDropdown, showLoginDropdown] = useState(true);
   const [loginRoute, setLoginRoute] = useState('/login');
   const [loginMessage, setLoginMessage] = useState('');
+  const [loginError, setLoginError] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
 
   useEffect(() => {
     console.log('useEffect firing');
-    /**
-     * Checks if user is logged in
-     * If user is logged in, it finds the user_id to populate the page with
-     * If not logged in, check if the user just authenticated their email
-    */
+    /* Checks if user is logged in. If so, it populates the page with user data */
     axios.get('/login/verifyUserAndReturnUserId')
       .then(res => {
         console.log('Res:', res.data);
@@ -37,6 +34,7 @@ function App() {
     if (document.cookie.includes('authenticated')) {
       const username = decodeURIComponent(document.cookie.split('XXX')[1]);
       setLoginRoute("/login");
+      showLoginDropdown(true);
       setUsername(username);
       setLoginMessage("Email verified. Please enter your password");
     };
@@ -45,6 +43,7 @@ function App() {
     if (document.cookie.includes('reset_password')) {
       const email = decodeURIComponent(document.cookie.split('XXX')[1]);
       setLoginRoute("/resetPassword");
+      showLoginDropdown(true);
       setEmail(email);
       setLoginMessage(`Please enter a new password for ${email}`);
     };
@@ -79,12 +78,19 @@ function App() {
     setLoginMessage('');
   };
 
+  // REROUTE (has to be its own function cause error messages need to be deleted)
+  function redirect(entry) {
+    setLoginRoute(entry);
+    setLoginError('');
+    setLoginError('');
+  };
+
   return (
     <>
       <Header
         loggedIn={loggedIn}
         logout={logout}
-        setRoute={setLoginRoute} 
+        setRoute={redirect} 
         username ={username}
         showLoginDropdown={showLoginDropdown}
       />
@@ -92,15 +98,15 @@ function App() {
       { (loginDropdown===true) && 
         <LoginContainer
           loggedIn={loggedIn} setLoggedIn={setLoggedIn}
-          route={loginRoute} setRoute={setLoginRoute}
+          route={loginRoute} setRoute={redirect}
           username={username} setUsername={setUsername}
           email={email} setEmail={setEmail}
           message={loginMessage} setMessage={setLoginMessage}
+          error={loginError} setError={setLoginError}
           xOut={xOut}
           login={login}
         />
       }
-
     </>
   );
 } 

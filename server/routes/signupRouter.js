@@ -30,7 +30,7 @@ router.post('/',
 router.post('/resend-verification',
   emailController.sendVerificationEmail,
   (req, res) => {
-    return res.status(200).send({ message: `Please verify the email sent to ${req.body.email} to complete log in.` });
+    return res.status(200).send({ message: `Please verify the email sent to ${req.body.email}.` });
 });
 
 // Fires when you click the verification link sent to your email
@@ -48,7 +48,7 @@ router.get('/delete-account',
   tokenController.removeCookie,
   signupController.deleteAccount,
   (req, res) => {
-    return res.status(202).send({ message: 'account successfully deleted'});
+    return res.status(200).send({ message: 'account successfully deleted'});
 });
 
 // If we refresh on /signup it just goes back to homepage

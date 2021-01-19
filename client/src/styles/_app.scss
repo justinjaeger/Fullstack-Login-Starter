@@ -7,6 +7,16 @@
   background: $off-white;
   font-family: $source-sans;
   color: #FFF;
+  button:focus {
+    outline: $secondary;
+  }
+  input:focus {
+    // outline-color: $gray;
+    outline: none;
+  }
+  button:hover {
+    cursor: pointer;
+  }
 }
 
 #App {}

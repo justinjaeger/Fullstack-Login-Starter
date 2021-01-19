@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function SignUp(props) {
 
-  const { setMessage, setRoute, email, login } = props;
+  const { setMessage, setRoute, setError, email, login } = props;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -27,7 +27,8 @@ function SignUp(props) {
       .then(res => {
         /* when something about the input is wrong, server sends 202 with message */
         if (res.status === 202) {
-          setMessage(res.data.message);
+          if (res.data.message) setMessage(res.data.message);
+          if (res.data.error) setError(res.data.error);
         } else if (res.status === 200) {
           console.log('logged user in successfully', res.data);
           login(res.data); // log user in & send user data
@@ -56,7 +57,6 @@ function SignUp(props) {
         <div className="login-form-label">Confirm Password</div>
         <input
           className="login-form-input"
-          autoFocus
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}

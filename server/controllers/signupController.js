@@ -19,16 +19,16 @@ signupController.validateEmailAndUsername = async (req, res, next) => {
   const { email, username } = req.body;
 
   if (!email.includes('@') || !email.includes('.') ) {
-    return res.status(202).send({ message : 'this email is not properly formatted' });
+    return res.status(202).send({ error : 'this email is not properly formatted' });
   };
 
   const filterResult = usernameFilter(username);
   if (filterResult.status === false) {
-    return res.status(202).send({ message : filterResult.message });
+    return res.status(202).send({ error : filterResult.message });
   };
 
   if (profanityFilter(username) === true) {
-    return res.status(202).send({ message : 'tisk tisk. profanity is not allowed in your username'});
+    return res.status(202).send({ error : 'Profanity is not allowed in your username'});
   };
 
   return next();
@@ -48,15 +48,15 @@ signupController.validatePassword = async (req, res, next) => {
   const { password, confirmPassword } = req.body;
 
   if (password !== confirmPassword) {
-    return res.status(202).send({ message : 'passwords do not match'});
+    return res.status(202).send({ error : 'passwords do not match'});
   };
 
   if (password.length < 8) {
-    return res.status(202).send({ message : 'password must be more than 8 characters'});
+    return res.status(202).send({ error : 'password must be more than 8 characters'});
   };
 
   if (password.length > 20) {
-    return res.status(202).send({ message : 'password must be less than 20 characters'});
+    return res.status(202).send({ error : 'password must be less than 20 characters'});
   };
 
   return next();
@@ -114,18 +114,18 @@ signupController.createUser = (req, res, next) => {
 
     if (err) {
       console.log('error in createUser', err.sqlMessage);
-      let message = 'An error occured whlie creating user';
+      let error = 'An error occured whlie creating user';
 
       if (err.code === 'ER_DUP_ENTRY') {
         if (err.sqlMessage.split('.')[1] === `username'`) {
-          message = 'This username is already registered.';
+          error = 'This username is already registered.';
         };
         if (err.sqlMessage.split('.')[2] === `email'`) {
-          message = 'This email is already registered.';
+          error = 'This email is already registered.';
         }
       };
 
-      return res.status(202).send({ message });
+      return res.status(202).send({ error });
     };
   });
 };

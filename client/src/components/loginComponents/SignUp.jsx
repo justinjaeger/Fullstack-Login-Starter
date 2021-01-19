@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function SignUp(props) {
 
-  const { setMessage, setRoute, displayResendEmailLink } = props;
+  const { setMessage, setRoute, setError, displayResendEmailLink } = props;
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +28,9 @@ function SignUp(props) {
     axios.post('/signup', payload)
       .then(res => {
         /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
-        setMessage(res.data.message);
+        if (res.data.message) setMessage(res.data.message);
+        if (res.data.error) setError(res.data.error);
+        
         if (res.status === 200) {
           setRoute('/blank');
           displayResendEmailLink({ email, username });

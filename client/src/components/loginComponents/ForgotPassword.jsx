@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function ForgotPassword(props) {
 
-  const { setMessage, setRoute } = props;
+  const { setMessage, setRoute, setError } = props;
   const [email, setEmail] = useState("");
 
   function validateForm() {
@@ -20,7 +20,8 @@ function ForgotPassword(props) {
       .then(res => {
         console.log('got a response in forgotPassword')
         /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
-        setMessage(res.data.message);
+        if (res.data.message) setMessage(res.data.message);
+        if (res.data.error) setError(res.data.error);
         if (res.status === 200) {
           setRoute('/blank');
         };

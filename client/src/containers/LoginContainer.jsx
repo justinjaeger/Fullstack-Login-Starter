@@ -4,8 +4,6 @@ import axios from 'axios';
 
 import Login from '../components/loginComponents/Login';
 import SignUp from '../components/loginComponents/SignUp';
-// import Main from '../components/headerComponents/LoggedOut';
-// import Dashboard from '../components/headerComponents/LoggedIn';
 import ForgotPassword from '../components/loginComponents/ForgotPassword';
 import ResetPassword from '../components/loginComponents/ResetPassword';
 import Blank from '../components/loginComponents/Blank';
@@ -18,16 +16,11 @@ const LoginContainer = (props) => {
     username, setUsername,
     email, setEmail,
     message, setMessage,
+    error, setError,
     xOut,
     login
   } = props;
 
-  // const [loggedIn, setLoggedIn] = useState(false);
-  // const [username, setUsername] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [route, setRoute] = useState("/");
-  // const [message, setMessage] = useState(false);
-  // const [xButton, showXButton] = useState(false);
   const [resendEmailLink, displayResendEmailLink] = useState(false);
 
   // RESEND VERIFICATION EMAIL
@@ -52,6 +45,8 @@ const LoginContainer = (props) => {
 
       <button onClick={() => xOut()} className="x-button">X</button>
 
+      { message && <div className="login-message">{message}</div>}
+
       <div id="login-form-container">
       { (route === '/login') &&
         <Login 
@@ -59,6 +54,7 @@ const LoginContainer = (props) => {
           username={username}
           login={login}
           setMessage={setMessage}
+          setError={setError}
           displayResendEmailLink={displayResendEmailLink}
         />
       }
@@ -67,6 +63,7 @@ const LoginContainer = (props) => {
         <SignUp 
           setRoute={setRoute}
           setMessage={setMessage}
+          setError={setError}
           displayResendEmailLink={displayResendEmailLink}
         />
       }
@@ -75,6 +72,7 @@ const LoginContainer = (props) => {
         <ForgotPassword 
           setRoute={setRoute}
           setMessage={setMessage}
+          setError={setError}
         />
       }
 
@@ -83,6 +81,7 @@ const LoginContainer = (props) => {
           email={email}
           setRoute={setRoute}
           setMessage={setMessage}
+          setError={setError}
           login={login}
         />
       }
@@ -93,9 +92,9 @@ const LoginContainer = (props) => {
       }
       </div>
 
-      { message && <div className="login-message">{message}</div>}
+      { error && <div className="error-message">{error}</div>}
       
-      { resendEmailLink && <div className="login-message"><button onClick={() => {sendVerificationEmail(resendEmailLink.email, resendEmailLink.username)}} className="secondary-button" >Click here</button> to resend email</div> }
+      { resendEmailLink && <div className="login-message"><button onClick={() => {sendVerificationEmail(resendEmailLink.email, resendEmailLink.username)}} className="click-here-button" >Click here</button> to resend email</div> }
 
     </div>
   );  

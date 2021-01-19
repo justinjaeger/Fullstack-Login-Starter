@@ -13,10 +13,6 @@ function Header(props) {
     showLoginDropdown 
   } = props;
 
-  useEffect(() => {
-    console.log('header', loggedIn)
-  });
-
   return (
     <div id="Header">
 
