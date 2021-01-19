@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function ForgotPassword(props) {
 
-  const { setMessage, setRoute, showXButton } = props;
+  const { setMessage, setRoute } = props;
   const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    showXButton(true);
-  });
 
   function validateForm() {
     return email.length > 0;
@@ -39,7 +34,7 @@ function ForgotPassword(props) {
 
   return (
     <>
-      <div>Enter your email to reset your password</div>
+      <div className="login-message">Enter your email to reset your password</div>
       
       <form onSubmit={handleSubmit} className="login-form">
 
@@ -47,9 +42,9 @@ function ForgotPassword(props) {
         <input
           className="login-form-input"
           autoFocus
-          type="email"
+          type="text"
           value={email}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         /> 
 
         <button disabled={!validateForm()} className="submit-button">Submit</button>

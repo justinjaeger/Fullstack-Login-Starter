@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function SignUp(props) {
 
-  const { setMessage, setRoute, email, showXButton, login } = props;
+  const { setMessage, setRoute, email, login } = props;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  useEffect(() => {
-    showXButton(true);
-  });
 
   function validateForm() {
     return password.length > 0 && confirmPassword.length > 0;

@@ -1,56 +1,122 @@
 @import './variables';
 
-@mixin flexCenter {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+@mixin flexRight() {
+  float: right;
+  width: 100%;
 }
 
 #login-container {
-  @include flexCenter();
-  background: #FFF;
-  border: 1px solid #e7e7e7;
-  box-shadow: 5px 5px 40px 5px #cecece;
+  @include flexRight();
+  background: $off-black;
+  padding: 5 10 5 10;
+  width: 180px;
+  max-width: 100%;
+  font-size: 10px;
   border-radius: 5px;
-  margin: auto;
-  padding: 1%;
-  width: 90%;
+  margin-top: -5px;
+}
+
+#login-form-container {
+  display: inline-block;
+  background: none;
 }
 
 .login-form {
-  color:brown !important;
+  background: none;
 }
-.login-form-label {
 
+.login-form-label {
+  background: none;
 }
+
 .login-form-input {
-  
+  background: $off-white;
+  color: $off-black;
+  font-size: 10px;
+  width: 150px;
+  max-width: 100%;
+  border-radius: 3px;
+  border: none;
+  padding: 2 2 2 6;
 }
 
 .login-message {
-  background: burlywood;
-  border: none;
-  border-radius: 0px;
+  color: $off-white;
+  display: block;
+  float: left;
+  padding: 0 0 5 0;
+  background: $off-black;
+}
+
+.error-message {
+  color: $primary-light;
+  display: block;
+  float: left;
+  background: $off-black;
 }
 
 // BUTTONS
 .primary-button {
-  background: burlywood;
+  background: none;
   border: none;
-  border-radius: 0px;
+  border-radius: 3px;
+  padding: 5px;
+  margin-right: 10px;
+  color: #FFF;
+  font-family: $oswald;
+  &:hover {
+    color:$secondary;
+    cursor: pointer;
+  } 
 }
-.secondary-button {
-  background: burlywood;
+
+.forgot-password-button {
+  position: relative;
+  font-size: 10px;
+  background: $off-black;
+  float: right;
+  margin-top: 13px;
   border: none;
-  border-radius: 0px;
+  &:hover {
+    color:$secondary;
+    cursor: pointer;
+  } 
 }
+
 .submit-button {
-  background: burlywood;
+  display: block;
+  float: left;
+  background: $off-white;
+  color: $off-black;
+  font-family: $oswald;
   border: none;
-  border-radius: 0px;
+  border-radius: 3px;
+  padding: 0 5 0 5;
+  margin: 5 0 5 0;
+  &:hover {
+    background: $secondary;
+    color: $off-black;
+    cursor: pointer;
+  } 
 }
+
 .x-button {
-  background: burlywood;
-  border: none;
-  border-radius: 0px;
+  position: fixed;
+  display: block;
+  background: $off-white;
+  color: $off-black;
+  text-align: center;
+  line-height: 0px;
+  font-weight: 600;
+  top: 32px;
+  right: 5px;
+  height: 15px;
+  width: 15px;
+  border: 1px solid $off-black;
+  border-radius: 50%;
+  &:hover {
+    background: $secondary;
+    color: $off-black;
+    cursor: pointer;
+  } 
 }

@@ -4,8 +4,9 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-#App {
+  background: $off-white;
+  font-family: $source-sans;
   color: #FFF;
 }
+
+#App {}

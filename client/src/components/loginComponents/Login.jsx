@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function Login(props) {
 
-  const { login, setMessage, username, setRoute, showXButton, displayResendEmailLink } = props;
+  const { login, setMessage, username, setRoute, displayResendEmailLink } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
     if (username) setEmailOrUsername(username);
-    showXButton(true);
   });
 
   function validateForm() {
@@ -51,7 +49,7 @@ function Login(props) {
     <>
       <form onSubmit={handleSubmit} className="login-form">
 
-        <div className=".login-form-label">Email or Username</div>
+        <div className="login-form-label">Email or Username</div>
         <input
           className="login-form-input"
           autoFocus
@@ -60,7 +58,7 @@ function Login(props) {
           onChange={(e) => setEmailOrUsername(e.target.value)}
         />
 
-        <div className=".login-form-label">Password</div>
+        <div className="login-form-label">Password</div>
         <input
           className="login-form-input"
           autoFocus
@@ -69,13 +67,11 @@ function Login(props) {
           onChange={(e) => setPassword(e.target.value)}
         />  
 
-        <button onClick={() => setRoute('/forgotPassword')} className="secondary-button">Forgot your password?</button>
+        <button onClick={() => setRoute('/forgotPassword')} className="forgot-password-button">Forgot your password?</button>
 
-        <button disabled={!validateForm()} className="submit-button" >Login</button>
+        <button disabled={!validateForm()} className="submit-button" >Submit</button>
       
       </form>
-
-      <button onClick={() => setRoute('/signup')} className="primary-button">Sign Up</button>
     </>
   );
 }
