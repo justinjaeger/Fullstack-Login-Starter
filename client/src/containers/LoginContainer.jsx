@@ -11,10 +11,9 @@ import Blank from '../components/loginComponents/Blank';
 const LoginContainer = (props) => {
 
   const { 
-    loggedIn, setLoggedIn,
     route, setRoute, 
-    username, setUsername,
-    email, setEmail,
+    username,
+    email,
     message, setMessage,
     error, setError,
     xOut,
