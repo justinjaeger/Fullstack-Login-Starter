@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function ForgotPassword(props) {
 
-  const { setMessage, setRoute, showXButton } = props;
+  const { setMessage, setRoute, setError } = props;
   const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    showXButton(true);
-  });
 
   function validateForm() {
     return email.length > 0;
@@ -25,7 +20,8 @@ function ForgotPassword(props) {
       .then(res => {
         console.log('got a response in forgotPassword')
         /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
-        setMessage(res.data.message);
+        if (res.data.message) setMessage(res.data.message);
+        if (res.data.error) setError(res.data.error);
         if (res.status === 200) {
           setRoute('/blank');
         };
@@ -39,27 +35,22 @@ function ForgotPassword(props) {
 
   return (
     <>
-
-      <div>Enter your email to reset your password</div>
+      <div className="login-message">Enter your email to reset your password</div>
       
-      <Form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
 
-        <Form.Group size="lg" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            autoFocus
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} /* so it actually updates visually when you type */
-          />
-        </Form.Group>
+        <div className="login-form-label">Email</div>
+        <input
+          className="login-form-input"
+          autoFocus
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        /> 
 
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Submit
-        </Button>
+        <button disabled={!validateForm()} className="submit-button">Submit</button>
         
-      </Form>
-
+      </form>
     </>
   );
 };

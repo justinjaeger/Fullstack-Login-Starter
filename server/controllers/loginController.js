@@ -29,7 +29,7 @@ loginController.verifyUserAndStoreUserId = (req, res, next) => {
       if (result[0] === undefined) {
         /* if we go in here, it means the user doesn't exist */
         console.log(`error finding ${entryType} in db`, err);
-        return res.status(202).send({ message : `Credentials do not match`});
+        return res.status(202).send({ error : `Credentials do not match`});
       };
 
       console.log(`found ${entryType}`, 'of user', result[0].user_id);
@@ -73,7 +73,7 @@ loginController.verifyPassword = (req, res, next) => {
 
         if (result === false) {
           console.log('passwords do NOT match:', 'myEntry:', password, 'dbHashedPass:', dbPassword);
-          return res.status(202).send({ message : `Credentials do not match`});
+          return res.status(202).send({ error : `Credentials do not match`});
         };
 
         if (err) {

@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function Login(props) {
 
-  const { login, setMessage, username, setRoute, showXButton, displayResendEmailLink } = props;
+  const { login, setMessage, setError, username, setRoute, displayResendEmailLink } = props;
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
     if (username) setEmailOrUsername(username);
-    showXButton(true);
   });
 
   function validateForm() {
@@ -30,7 +28,8 @@ function Login(props) {
       .then(res => {
         /* when something about the input is wrong, server sends 202 with message */
         if (res.status === 202) {
-          setMessage(res.data.message);
+          if (res.data.message) setMessage(res.data.message);
+          if (res.data.error) setError(res.data.error);
           if (res.data.email) {
             displayResendEmailLink({ email: res.data.email, username: res.data.username });
             setRoute('/blank');
@@ -49,35 +48,30 @@ function Login(props) {
 
   return (
     <>
-      {/* <button onClick={() => xout()}>X</button> */}
+      <form onSubmit={handleSubmit} className="login-form">
 
-      <Form onSubmit={handleSubmit}>
-        <Form.Group size="lg" controlId="emailOrUsername">
-          <Form.Label>Email or Username</Form.Label>
-          <Form.Control
-            autoFocus
-            type="text"
-            value={emailOrUsername}
-            onChange={(e) => setEmailOrUsername(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
+        <div className="login-form-label">Email or Username</div>
+        <input
+          className="login-form-input"
+          autoFocus
+          type="text"
+          value={emailOrUsername}
+          onChange={(e) => setEmailOrUsername(e.target.value)}
+        />
 
-        <div><button onClick={() => setRoute('/forgotPassword')}>Forgot your password?</button></div>
+        <div className="login-form-label">Password</div>
+        <input
+          className="login-form-input"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />  
 
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Login
-        </Button>
-      </Form>
+        <button onClick={() => setRoute('/forgotPassword')} className="forgot-password-button">Forgot your password?</button>
 
-      <button onClick={() => setRoute('/signup')}>Sign Up</button>
+        <button disabled={!validateForm()} className="submit-button" >Submit</button>
+      
+      </form>
     </>
   );
 }

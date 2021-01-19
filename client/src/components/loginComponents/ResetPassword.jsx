@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
 
 function SignUp(props) {
 
-  const { setMessage, setRoute, email, showXButton, login } = props;
+  const { setMessage, setRoute, setError, email, login } = props;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  useEffect(() => {
-    showXButton(true);
-  });
 
   function validateForm() {
     return password.length > 0 && confirmPassword.length > 0;
@@ -32,7 +27,8 @@ function SignUp(props) {
       .then(res => {
         /* when something about the input is wrong, server sends 202 with message */
         if (res.status === 202) {
-          setMessage(res.data.message);
+          if (res.data.message) setMessage(res.data.message);
+          if (res.data.error) setError(res.data.error);
         } else if (res.status === 200) {
           console.log('logged user in successfully', res.data);
           login(res.data); // log user in & send user data
@@ -47,34 +43,28 @@ function SignUp(props) {
 
   return (
     <>
-      
-      <Form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
 
-        <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            autoFocus
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
+        <div className="login-form-label">Password</div>
+        <input
+          className="login-form-input"
+          autoFocus
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-        <Form.Group size="lg" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Form.Group>
+        <div className="login-form-label">Confirm Password</div>
+        <input
+          className="login-form-input"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
 
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Reset Password
-        </Button>
+        <button disabled={!validateForm()} className="submit-button" >Reset Password</button>
         
-      </Form>
-
+      </form>
     </>
   );
 };
