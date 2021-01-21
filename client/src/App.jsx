@@ -7,8 +7,8 @@ import LoginContainer from './containers/LoginContainer';
 function App() { 
 
   const [loggedIn, setLoggedIn] = useState(false);
-  const [loginDropdown, showLoginDropdown] = useState(true);
-  const [loginRoute, setLoginRoute] = useState('/login');
+  const [loginDropdown, showLoginDropdown] = useState(false);
+  const [loginRoute, setLoginRoute] = useState('/');
   const [loginMessage, setLoginMessage] = useState('');
   const [loginError, setLoginError] = useState('');
   const [username, setUsername] = useState('');
