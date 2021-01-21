@@ -1,7 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const fs =  require('fs');
 const path = require('path');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const PORT = 3000;
 const cookieParser = require('cookie-parser');
 

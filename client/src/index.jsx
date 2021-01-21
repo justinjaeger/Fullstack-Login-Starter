@@ -4,7 +4,15 @@ import ReactDOM from 'react-dom';
 
 import App from './App';
 
-ReactDOM.render(
+/* NO SSR */
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <App/>
+//   </React.StrictMode>,
+//   document.getElementById('root'),
+// );
+
+ReactDOM.hydrate(
   <React.StrictMode>
     <App/>
   </React.StrictMode>,
