@@ -1,4 +1,4 @@
-This is intended as starter code for applications that deal with users. Built with React + Router, Node.js + Express, and MySQL.
+Starter code for applications that connect to an API and deal with users + authentication. Built with React, Node.js + Express, and MySQL. Best for single-page applications if looking to do client-side rendering only. For server-side rendering, check out the sibling application, Nextjs-Login-Starter
 
 Authentication workflow is as follows:
 - user submits a signup form
