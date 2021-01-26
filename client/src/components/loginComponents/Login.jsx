@@ -35,12 +35,11 @@ function Login(props) {
             setRoute('/blank');
           };
         } else if (res.status === 200) {
-          console.log('logged user in successfully');
           login(res.data); /* log user in & send user data */
         };
       })
       .catch(err => {
-        console.log('something broke trying to log user in', err.response);
+        console.log('error: could not log user in', err.response);
       })
 
     event.preventDefault(); /** prevents it from refreshing */

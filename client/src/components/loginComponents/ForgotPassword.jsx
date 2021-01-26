@@ -18,7 +18,6 @@ function ForgotPassword(props) {
     
     axios.post('/login/forgotPassword', payload)
       .then(res => {
-        console.log('got a response in forgotPassword')
         /* whether we get 202 (error message) or 200 (tells us to check email), we want to display the message */
         if (res.data.message) setMessage(res.data.message);
         if (res.data.error) setError(res.data.error);

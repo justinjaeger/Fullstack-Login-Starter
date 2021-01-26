@@ -15,11 +15,10 @@ function App() {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    console.log('useEffect firing');
+    // console.log('useEffect firing');
     /* Checks if user is logged in. If so, it populates the page with user data */
     axios.get('/login/verifyUserAndReturnUserId')
       .then(res => {
-        console.log('Res:', res.data);
         const { username } = res.data;
         if (username) {
           setLoggedIn(true);
@@ -52,7 +51,6 @@ function App() {
 
   // LOG IN
   function login(userData) {
-    console.log('logging user in with this data: ', userData)
     setUsername(userData.username);
     setLoggedIn(true);
     showLoginDropdown(false);
@@ -63,7 +61,6 @@ function App() {
   function logout() {
     axios.get('/login/logout')
     .then(res => {
-      console.log('logged user out successfully');
       setLoggedIn(false);
       setUsername('');
     })
@@ -82,7 +79,7 @@ function App() {
   function redirect(entry) {
     setLoginRoute(entry);
     setLoginError('');
-    setLoginError('');
+    setLoginMessage('');
   };
 
   return (

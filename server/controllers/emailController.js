@@ -15,7 +15,6 @@ const emailController = {};
  */
 
 emailController.sendVerificationEmail = (req, res, next) => {
-  console.log('inside sendVerificationEmail');
 
   const { email, username } = req.body;
 
@@ -23,8 +22,6 @@ emailController.sendVerificationEmail = (req, res, next) => {
   const encryptedUsername = encrypt(username);
   const encodedUsername = encodeURIComponent(encryptedUsername);
   const url = `http://localhost:${PORT}/signup/verify-email/?user=${encodedUsername}`
-
-  console.log('encoded username: ', encodedUsername);
 
   /* utilizes the helper function, which exports an object of objects based on input */
   const { transport, emailVerificationOptions } = mailHelper(email, url, username);
@@ -51,7 +48,6 @@ emailController.sendVerificationEmail = (req, res, next) => {
  */
 
 emailController.sendResetPasswordEmail = (req, res, next) => {
-  console.log('inside sendResetPasswordEmail');
 
   const { email } = req.body;
 
@@ -59,8 +55,6 @@ emailController.sendResetPasswordEmail = (req, res, next) => {
   const encryptedEmail = encrypt(email);
   const encodedEmail = encodeURIComponent(encryptedEmail);
   const url = `http://localhost:${PORT}/login/resetPassword/?email=${encodedEmail}`
-
-  console.log('encoded email: ', encodedEmail);
 
   /* utilizes the helper function, which exports an object of objects based on input */
   const { transport, passwordResetOptions } = mailHelper(email, url);
@@ -88,14 +82,11 @@ emailController.sendResetPasswordEmail = (req, res, next) => {
  */
 
 emailController.decryptUsername = (req, res, next) => {
-  console.log('inside decryptUsername');
 
   const { user } = req.query;
 
   const decoded = decodeURIComponent(user);
   const decryptedUsername = decrypt(decoded);
-
-  console.log('decrypted username: ', decryptedUsername);
 
   res.locals.username = decryptedUsername;
 
@@ -110,14 +101,11 @@ emailController.decryptUsername = (req, res, next) => {
  */
 
 emailController.decryptEmail = (req, res, next) => {
-  console.log('inside decryptEmail');
 
   const { email } = req.query;
 
   const decoded = decodeURIComponent(email);
   const decryptedEmail = decrypt(decoded);
-
-  console.log('decrypted email: ', decryptedEmail);
 
   res.locals.email = decryptedEmail;
 

@@ -17,7 +17,6 @@ const tokenController = {};
  */
 
 tokenController.createAccessToken = (req, res, next) => {
-  console.log('inside createAccessToken');
 
   res.clearCookie('authenticated'); /* Delete the authenticated token */
 
@@ -26,8 +25,6 @@ tokenController.createAccessToken = (req, res, next) => {
   const accessPayload = { user_id };
   const accessOptions = { expiresIn: '10m'}; /* change the expiration here */
   const access_token = jwt.sign(accessPayload, ACCESS_TOKEN_SECRET, accessOptions);
-
-  console.log('created access token: ', access_token);
 
   res.cookie('access_token', access_token, { httpOnly : true });
 
@@ -60,7 +57,6 @@ tokenController.createAccessToken = (req, res, next) => {
  */
 
 tokenController.verifyToken = (req, res, next) => {
-  console.log('inside verifyToken');
 
   if (req.headers.cookie === undefined) return res.sendStatus(200);
   if (!req.headers.cookie.includes('access_token')) return res.sendStatus(200);
@@ -103,7 +99,6 @@ tokenController.verifyToken = (req, res, next) => {
  */
 
 tokenController.deleteTokenFromDb = (req, res, next) => {
-  console.log('inside deleteTokenFromDb');
 
   const { access_token } = res.locals;
 
@@ -153,7 +148,6 @@ tokenController.deleteTokenFromDb = (req, res, next) => {
  */
 
 tokenController.deleteAllUserTokens = (req, res, next) => {
-  console.log('inside deleteAllTokens');
 
   const { user_id } = res.locals;
 
@@ -174,7 +168,6 @@ tokenController.deleteAllUserTokens = (req, res, next) => {
 // =================================== //
 
 tokenController.removeCookie = (req, res, next) => {
-  console.log('inside removeCookie');
 
   res.clearCookie('access_token');
   

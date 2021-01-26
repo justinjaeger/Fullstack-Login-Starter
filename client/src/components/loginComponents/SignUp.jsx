@@ -10,7 +10,7 @@ function SignUp(props) {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   function validateForm() {
-    return email.length > 0 && password.length > 0;
+    return username.length > 0 && email.length > 0 && password.length > 0 && confirmPassword.length > 0;
   };
 
   function handleSubmit(event) {
@@ -21,8 +21,6 @@ function SignUp(props) {
       password,
       confirmPassword
     };
-
-    console.log('submitted', payload);
 
     /* NOTE: The /signup POST request will send the user a verification email, so it won't return anything back except a message */
     axios.post('/signup', payload)

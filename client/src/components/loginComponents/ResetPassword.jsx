@@ -19,8 +19,6 @@ function SignUp(props) {
       confirmPassword
     };
 
-    console.log('submitted', payload);
-
     /* NOTE: The /signup POST request will send the user a verification email, so it won't return anything back except a message */
     
     axios.post('/login/changePasswordAndLogin', payload)
@@ -30,12 +28,11 @@ function SignUp(props) {
           if (res.data.message) setMessage(res.data.message);
           if (res.data.error) setError(res.data.error);
         } else if (res.status === 200) {
-          console.log('logged user in successfully', res.data);
           login(res.data); // log user in & send user data
         };
       })
       .catch(err => {
-        console.log('something broke - did not log user in after changing password', err.response);
+        console.log('error: could not log user in after changing password', err.response);
       })
 
     event.preventDefault(); /* prevents it from refreshing */

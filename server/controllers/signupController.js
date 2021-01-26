@@ -15,7 +15,7 @@ const signupController = {};
  */
 
 signupController.validateEmailAndUsername = async (req, res, next) => {
-  console.log('inside validateUsername');
+
   const { email, username } = req.body;
 
   if (!email.includes('@') || !email.includes('.') ) {
@@ -43,7 +43,6 @@ signupController.validateEmailAndUsername = async (req, res, next) => {
  */
 
 signupController.validatePassword = async (req, res, next) => {
-  console.log('inside validatePassword');
   
   const { password, confirmPassword } = req.body;
 
@@ -70,7 +69,6 @@ signupController.validatePassword = async (req, res, next) => {
  */
 
 signupController.hashPassword = async (req, res, next) => {
-  console.log('inside hashPassword');
 
   const { password } = req.body;
 
@@ -100,7 +98,6 @@ signupController.hashPassword = async (req, res, next) => {
  */
 
 signupController.createUser = (req, res, next) => {
-  console.log('inside createUser');
 
   const { email, username } = req.body;
   const password = res.locals.hashedPassword;
@@ -140,7 +137,6 @@ signupController.createUser = (req, res, next) => {
  */
 
 signupController.authenticateUser = (req, res, next) => {
-  console.log('inside authenticateUser');
 
   const { username } = res.locals;
   
@@ -167,7 +163,6 @@ signupController.authenticateUser = (req, res, next) => {
  */
 
 signupController.getUserIdByUsername = (req, res, next) => {
-  console.log('inside getUserIdByUsername');
 
   const { username } = req.body;
 
@@ -197,7 +192,6 @@ signupController.getUserIdByUsername = (req, res, next) => {
  */
 
 signupController.deleteAccount = (req, res, next) => {
-  console.log('inside deleteAccount');
 
   const { user_id } = req.body;
 

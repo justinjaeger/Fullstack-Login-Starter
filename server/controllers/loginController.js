@@ -15,7 +15,6 @@ const loginController = {};
  */
 
 loginController.verifyUserAndStoreUserId = (req, res, next) => {
-  console.log('inside verifyUserAndStoreUserId');
 
   const { emailOrUsername } = req.body;
 
@@ -54,7 +53,7 @@ loginController.verifyUserAndStoreUserId = (req, res, next) => {
  */
 
 loginController.verifyPassword = (req, res, next) => {
-  console.log('inside verifyPassword');
+
   const { user_id } = res.locals;
   const { password } = req.body;
 
@@ -99,7 +98,7 @@ loginController.verifyPassword = (req, res, next) => {
  */
 
 loginController.verifyEmailAuthenticated = (req, res, next) => {
-  console.log('inside verifyEmailAuthenticated');
+
   const { user_id } = res.locals;
 
   db.query(users.verifyAuthentication, [user_id], (err, result) => {
@@ -142,7 +141,7 @@ loginController.verifyEmailAuthenticated = (req, res, next) => {
  */
 
 loginController.returnUserData = (req, res, next) => {
-  console.log('inside returnUserData');
+
   const { user_id } = res.locals;
 
   db.query(users.getUserById, [user_id], (err, result) => {
@@ -172,7 +171,6 @@ loginController.returnUserData = (req, res, next) => {
  */
 
 loginController.ifEmailNoExistDontSend = (req, res, next) => {
-  console.log('inside ifEmailNoExistDontSend');
   
   const { email } = req.body;
 
@@ -200,7 +198,6 @@ loginController.ifEmailNoExistDontSend = (req, res, next) => {
 // =================================== //
 
 loginController.updatePassword = (req, res, next) => {
-  console.log('inside updatePassword');
 
   const { hashedPassword, user_id } = res.locals;
 
