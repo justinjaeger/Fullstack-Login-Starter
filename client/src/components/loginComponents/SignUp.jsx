@@ -31,6 +31,7 @@ function SignUp(props) {
         
         if (res.status === 200) {
           setRoute('/blank');
+          setMessage(res.data.message);
           displayResendEmailLink({ email, username });
         };
       })
